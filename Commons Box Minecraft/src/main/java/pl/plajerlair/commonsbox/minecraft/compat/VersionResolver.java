@@ -7,13 +7,14 @@ import org.bukkit.Bukkit;
  * <p>
  * Created at 09.03.2019
  */
+@Deprecated
 public class VersionResolver {
 
   private VersionResolver() {
   }
 
   public static ServerVersion resolveVersion() {
-    String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+    String version = Bukkit.getServer().getClass().getPackage().getName().replace('.', ',').split(",")[3];
     if (version.equalsIgnoreCase("v1_8_R3")) {
       return ServerVersion.MINECRAFT_1_8_R3;
     } else if (version.equalsIgnoreCase("v1_9_R1")) {

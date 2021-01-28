@@ -57,7 +57,7 @@ public class InventorySerializer {
       invConfig.set("ExperienceProgress", player.getExp());
       invConfig.set("ExperienceLevel", player.getLevel());
       invConfig.set("Current health", player.getHealth());
-      invConfig.set("Max health", player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+      invConfig.set("Max health", player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
       invConfig.set("Food", player.getFoodLevel());
       invConfig.set("Saturation", player.getSaturation());
       invConfig.set("Fire ticks", player.getFireTicks());
@@ -108,14 +108,10 @@ public class InventorySerializer {
     }
     try {
       FileConfiguration invConfig = YamlConfiguration.loadConfiguration(file);
-      Inventory inventory;
       int invSize = invConfig.getInt("Size", 36);
       int invMaxStackSize = invConfig.getInt("Max stack size", 64);
-      InventoryHolder invHolder = null;
-      if (invConfig.contains("Holder")) {
-        invHolder = Bukkit.getPlayer(invConfig.getString("Holder"));
-      }
-      inventory = Bukkit.getServer().createInventory(invHolder, InventoryType.PLAYER);
+      InventoryHolder invHolder = invConfig.contains("Holder") ? Bukkit.getPlayer(invConfig.getString("Holder")) : null;
+      Inventory inventory = Bukkit.getServer().createInventory(invHolder, InventoryType.PLAYER);
       inventory.setMaxStackSize(invMaxStackSize);
       try {
         ItemStack[] invContents = new ItemStack[invSize];
