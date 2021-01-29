@@ -7,6 +7,6 @@ package pl.plajerlair.commonsbox.configuration;
  */
 public interface Configuration<E> {
 
-    E getConfiguration(String file);
+  E getConfiguration(String file);
 
 }

@@ -6,6 +6,7 @@ import org.bukkit.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
 /**
  * @author Tigerpanzer_02
  * <p>
@@ -69,6 +70,6 @@ public class ColorUtil {
   }
 
   public static Color fromChatColor(ChatColor chatColor) {
-   return Color.fromRGB(colorMap.get(chatColor).getRed(), colorMap.get(chatColor).getGreen(), colorMap.get(chatColor).getBlue());
+    return Color.fromRGB(colorMap.get(chatColor).getRed(), colorMap.get(chatColor).getGreen(), colorMap.get(chatColor).getBlue());
   }
 }

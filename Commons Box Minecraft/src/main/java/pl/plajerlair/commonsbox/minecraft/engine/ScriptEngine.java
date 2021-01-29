@@ -1,11 +1,10 @@
 package pl.plajerlair.commonsbox.minecraft.engine;
 
-import java.util.logging.Level;
+import org.bukkit.Bukkit;
 
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-
-import org.bukkit.Bukkit;
+import java.util.logging.Level;
 
 /**
  * @author Plajer

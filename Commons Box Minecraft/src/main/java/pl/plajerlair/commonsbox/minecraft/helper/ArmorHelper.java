@@ -36,7 +36,7 @@ public class ArmorHelper {
 
   public static void setArmor(Player player, ArmorType type) {
     PlayerInventory inv = player.getInventory();
-    switch (type) {
+    switch(type) {
       case LEATHER:
         inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
         inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
@@ -68,9 +68,9 @@ public class ArmorHelper {
 
   public static void setColouredArmor(Color color, Player player) {
     ItemStack helmet = new ItemStack(Material.LEATHER_HELMET),
-      chestplate = new ItemStack(Material.LEATHER_CHESTPLATE),
-      leggings = new ItemStack(Material.LEATHER_LEGGINGS),
-      boots = new ItemStack(Material.LEATHER_BOOTS);
+        chestplate = new ItemStack(Material.LEATHER_CHESTPLATE),
+        leggings = new ItemStack(Material.LEATHER_LEGGINGS),
+        boots = new ItemStack(Material.LEATHER_BOOTS);
 
     LeatherArmorMeta helmMeta = (LeatherArmorMeta) helmet.getItemMeta();
     helmMeta.setColor(color);

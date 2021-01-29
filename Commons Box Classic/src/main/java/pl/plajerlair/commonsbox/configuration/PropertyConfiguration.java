@@ -24,7 +24,7 @@ public class PropertyConfiguration implements Configuration<Properties> {
       Properties properties = new Properties();
       properties.load(new FileInputStream(new File(dataFolder, file + ".properties")));
       return properties;
-    } catch (IOException e) {
+    } catch(IOException e) {
       e.printStackTrace();
     }
     return new Properties();

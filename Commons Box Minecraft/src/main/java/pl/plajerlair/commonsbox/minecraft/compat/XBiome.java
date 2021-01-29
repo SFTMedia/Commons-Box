@@ -33,7 +33,11 @@ import org.bukkit.block.Block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -168,7 +172,7 @@ public enum XBiome {
   @Nonnull
   private static String format(@Nonnull String name) {
     return FORMAT_PATTERN.matcher(
-            name.trim().replace('-', '_').replace(' ', '_')).replaceAll("").toUpperCase(Locale.ENGLISH);
+        name.trim().replace('-', '_').replace(' ', '_')).replaceAll("").toUpperCase(Locale.ENGLISH);
   }
 
   /**
@@ -182,8 +186,8 @@ public enum XBiome {
     Validate.notEmpty(biome, "Cannot check for null or empty biome name");
     biome = format(biome);
 
-    for (XBiome biomes : VALUES)
-      if (biomes.name().equals(biome) || biomes.anyMatchLegacy(biome)) return true;
+    for(XBiome biomes : VALUES)
+      if(biomes.name().equals(biome) || biomes.anyMatchLegacy(biome)) return true;
     return false;
   }
 
@@ -199,8 +203,8 @@ public enum XBiome {
     Validate.notEmpty(biome, "Cannot match XBiome of a null or empty biome name");
     biome = format(biome);
 
-    for (XBiome biomes : VALUES)
-      if (biomes.name().equals(biome) || biomes.anyMatchLegacy(biome)) return java.util.Optional.of(biomes);
+    for(XBiome biomes : VALUES)
+      if(biomes.name().equals(biome) || biomes.anyMatchLegacy(biome)) return java.util.Optional.of(biomes);
     return java.util.Optional.empty();
   }
 
@@ -216,7 +220,7 @@ public enum XBiome {
   public static XBiome matchXBiome(@Nonnull Biome biome) {
     Objects.requireNonNull(biome, "Cannot match XBiome of a null biome");
     return matchXBiome(biome.name())
-            .orElseThrow(() -> new IllegalArgumentException("Unsupported Biome: " + biome.name()));
+        .orElseThrow(() -> new IllegalArgumentException("Unsupported Biome: " + biome.name()));
   }
 
   /**
@@ -241,15 +245,15 @@ public enum XBiome {
   @SuppressWarnings({"Guava", "OptionalAssignedToNull"})
   public Biome parseBiome() {
     com.google.common.base.Optional<Biome> cached = CACHE.getIfPresent(this);
-    if (cached != null) return cached.orNull();
+    if(cached != null) return cached.orNull();
     com.google.common.base.Optional<Biome> biome;
 
     biome = Enums.getIfPresent(Biome.class, this.name());
 
-    if (!biome.isPresent()) {
-      for (String legacy : this.legacy) {
+    if(!biome.isPresent()) {
+      for(String legacy : this.legacy) {
         biome = Enums.getIfPresent(Biome.class, legacy);
-        if (biome.isPresent()) break;
+        if(biome.isPresent()) break;
       }
     }
 
@@ -269,7 +273,7 @@ public enum XBiome {
   @Nonnull
   public CompletableFuture<Void> setBiome(@Nonnull Chunk chunk) {
     Objects.requireNonNull(chunk, "Cannot set biome of null chunk");
-    if (!chunk.isLoaded()) {
+    if(!chunk.isLoaded()) {
       Validate.isTrue(chunk.load(true), "Could not load chunk at " + chunk.getX() + ", " + chunk.getZ());
     }
 
@@ -278,10 +282,10 @@ public enum XBiome {
 
     // Apparently setBiome is thread-safe.
     return CompletableFuture.runAsync(() -> {
-      for (int x = 0; x < 16; x++) {
-        for (int z = 0; z < 16; z++) {
+      for(int x = 0; x < 16; x++) {
+        for(int z = 0; z < 16; z++) {
           Block block = chunk.getBlock(x, 0, z);
-          if (block.getBiome() != biome) block.setBiome(biome);
+          if(block.getBiome() != biome) block.setBiome(biome);
         }
       }
     });
@@ -308,10 +312,10 @@ public enum XBiome {
 
     // Apparently setBiome is thread-safe.
     return CompletableFuture.runAsync(() -> {
-      for (int x = start.getBlockX(); x < end.getBlockX(); x++) {
-        for (int z = start.getBlockZ(); z < end.getBlockZ(); z++) {
+      for(int x = start.getBlockX(); x < end.getBlockX(); x++) {
+        for(int z = start.getBlockZ(); z < end.getBlockZ(); z++) {
           Block block = new Location(start.getWorld(), x, 0, z).getBlock();
-          if (block.getBiome() != biome) block.setBiome(biome);
+          if(block.getBiome() != biome) block.setBiome(biome);
         }
       }
     });

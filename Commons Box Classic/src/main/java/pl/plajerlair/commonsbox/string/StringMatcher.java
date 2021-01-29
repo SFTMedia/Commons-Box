@@ -16,39 +16,40 @@ public class StringMatcher {
 
   /**
    * Matches base string with possible other arguments
-   * @param base base string
+   *
+   * @param base          base string
    * @param possibilities possible similar strings
    * @return list of matches
    */
   public static List<Match> match(String base, List<String> possibilities) {
     possibilities.sort((o1, o2) ->
-      o1.length() == o2.length() ? 0 : Integer.compare(o2.length(), o1.length()));
+        o1.length() == o2.length() ? 0 : Integer.compare(o2.length(), o1.length()));
     int baseLength = base.length();
 
     Match bestMatch = new Match(base, -1);
     List<Match> otherMatches = new ArrayList<>();
-    for (String poss : possibilities) {
-      if (!poss.isEmpty()) {
+    for(String poss : possibilities) {
+      if(!poss.isEmpty()) {
         int matches = 0;
         int pos = -1;
-        for (int i = 0; i < Math.min(baseLength, poss.length()); i++) {
-          if (base.charAt(i) == poss.charAt(i)) {
-            if (pos != -1) {
+        for(int i = 0; i < Math.min(baseLength, poss.length()); i++) {
+          if(base.charAt(i) == poss.charAt(i)) {
+            if(pos != -1) {
               break;
             }
             pos = i;
           }
         }
-        for (int i = 0; i < Math.min(baseLength, poss.length()); i++) {
-          if ((pos != -1)
+        for(int i = 0; i < Math.min(baseLength, poss.length()); i++) {
+          if((pos != -1)
               && (base.charAt(i) == poss.charAt(Math.min(i + pos, poss.length() - 1)))) {
             matches++;
           }
         }
-        if (matches > bestMatch.length) {
+        if(matches > bestMatch.length) {
           bestMatch = new Match(poss, matches);
         }
-        if ((matches > 0) && (matches >= bestMatch.length)
+        if((matches > 0) && (matches >= bestMatch.length)
             && (!poss.equalsIgnoreCase(bestMatch.match))) {
           otherMatches.add(new Match(poss, matches));
         }

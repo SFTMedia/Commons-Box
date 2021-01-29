@@ -42,11 +42,11 @@ public class StringFormatUtils {
 
     StringBuilder sb = new StringBuilder();
     sb.append(completedCharacter);
-    for (int i = 0; i < progressBars; i++) {
+    for(int i = 0; i < progressBars; i++) {
       sb.append(symbol);
     }
     sb.append(notCompletedCharacter);
-    for (int i = 0; i < leftOver; i++) {
+    for(int i = 0; i < leftOver; i++) {
       sb.append(symbol);
     }
     return sb.toString();

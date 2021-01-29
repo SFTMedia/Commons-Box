@@ -1,15 +1,15 @@
 package pl.plajerlair.commonsbox.minecraft.item;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Plajer
@@ -46,7 +46,7 @@ public class ItemBuilder {
 
   public ItemBuilder name(final String name) {
     final ItemMeta meta = itemStack.getItemMeta();
-    if (meta != null) {
+    if(meta != null) {
       meta.setDisplayName(name == null ? "" : name);
       itemStack.setItemMeta(meta);
     }
@@ -69,9 +69,9 @@ public class ItemBuilder {
 
   public ItemBuilder lore(final List<String> name) {
     final ItemMeta meta = itemStack.getItemMeta();
-    if (meta != null) {
+    if(meta != null) {
       List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-      if (name != null) {
+      if(name != null) {
         lore.addAll(name);
       }
       meta.setLore(lore);
@@ -82,11 +82,11 @@ public class ItemBuilder {
 
   public ItemBuilder colorizeItem() {
     ItemMeta meta = itemStack.getItemMeta();
-    if (meta != null) {
-      if (meta.hasDisplayName()) {
+    if(meta != null) {
+      if(meta.hasDisplayName()) {
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
       }
-      if (meta.hasLore()) {
+      if(meta.hasLore()) {
         meta.setLore(meta.getLore().stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
       }
     }

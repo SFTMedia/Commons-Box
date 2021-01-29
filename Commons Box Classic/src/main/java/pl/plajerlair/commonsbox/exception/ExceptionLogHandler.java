@@ -36,25 +36,25 @@ public class ExceptionLogHandler extends Handler {
   @Override
   public void publish(LogRecord record) {
     Throwable throwable = record.getThrown();
-    if (!(throwable instanceof Exception) || !throwable.getClass().getSimpleName().contains("Exception")) {
+    if(!(throwable instanceof Exception) || !throwable.getClass().getSimpleName().contains("Exception")) {
       return;
     }
-    if (throwable.getStackTrace().length == 0
+    if(throwable.getStackTrace().length == 0
         || !throwable.getStackTrace()[0].getClassName().contains(mainClass)) {
       return;
     }
-    if (containsBlacklistedClass(throwable)) {
+    if(containsBlacklistedClass(throwable)) {
       return;
     }
-    for (ExceptionLogger logger : exceptionLoggers) {
+    for(ExceptionLogger logger : exceptionLoggers) {
       logger.receiveException((Exception) throwable);
     }
   }
 
   private boolean containsBlacklistedClass(Throwable throwable) {
-    for (StackTraceElement element : throwable.getStackTrace()) {
-      for (String blacklist : blacklistedClasses) {
-        if (element.getClassName().contains(blacklist)) {
+    for(StackTraceElement element : throwable.getStackTrace()) {
+      for(String blacklist : blacklistedClasses) {
+        if(element.getClassName().contains(blacklist)) {
           return true;
         }
       }

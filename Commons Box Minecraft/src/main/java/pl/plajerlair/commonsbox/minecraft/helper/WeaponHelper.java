@@ -46,7 +46,7 @@ public class WeaponHelper {
 
   public static ItemStack getEnchanted(ItemStack itemStack, Enchantment[] enchantments, int[] levels) {
     Map<Enchantment, Integer> enchants = new HashMap<>();
-    for (int i = 0; i < enchantments.length; i++) {
+    for(int i = 0; i < enchantments.length; i++) {
       enchants.put(enchantments[i], levels[i]);
     }
     itemStack.addUnsafeEnchantments(enchants);
@@ -55,7 +55,7 @@ public class WeaponHelper {
 
   public static ItemStack getUnBreakingSword(ResourceType type, int level) {
     ItemStack itemStack;
-    switch (type) {
+    switch(type) {
       case WOOD:
         itemStack = XMaterial.WOODEN_SWORD.parseItem();
         itemStack.addUnsafeEnchantment(Enchantment.DURABILITY, level);

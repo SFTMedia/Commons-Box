@@ -24,11 +24,11 @@ public class MysqlDatabase {
     databaseLogger.log(Level.INFO, "Configuring MySQL connection!");
     configureConnPool(user, password, jdbcUrl);
 
-    try (Connection connection = getConnection()) {
-      if (connection == null) {
+    try(Connection connection = getConnection()) {
+      if(connection == null) {
         databaseLogger.log(Level.SEVERE, "Failed to connect to database!");
       }
-    } catch (SQLException e) {
+    } catch(SQLException e) {
       e.printStackTrace();
     }
   }
@@ -37,11 +37,11 @@ public class MysqlDatabase {
     databaseLogger.log(Level.INFO, "Configuring MySQL connection!");
     configureConnPool(user, password, host, database, port);
 
-    try (Connection connection = getConnection()) {
-      if (connection == null) {
+    try(Connection connection = getConnection()) {
+      if(connection == null) {
         databaseLogger.log(Level.SEVERE, "Failed to connect to database!");
       }
-    } catch (SQLException e) {
+    } catch(SQLException e) {
       e.printStackTrace();
     }
   }
@@ -56,7 +56,7 @@ public class MysqlDatabase {
       hikariDataSource = config;
       databaseLogger.info("Setting up MySQL Connection pool...");
       databaseLogger.info("Connection pool successfully configured. ");
-    } catch (Exception e) {
+    } catch(Exception e) {
       e.printStackTrace();
       databaseLogger.warning("Cannot connect to MySQL database!");
       databaseLogger.warning("Check configuration of your database settings!");
@@ -76,7 +76,7 @@ public class MysqlDatabase {
       hikariDataSource = config;
       databaseLogger.info("Setting up MySQL Connection pool...");
       databaseLogger.info("Connection pool successfully configured. ");
-    } catch (Exception e) {
+    } catch(Exception e) {
       e.printStackTrace();
       databaseLogger.warning("Cannot connect to MySQL database!");
       databaseLogger.warning("Check configuration of your database settings!");
@@ -84,11 +84,11 @@ public class MysqlDatabase {
   }
 
   public void executeUpdate(String query) {
-    try (Connection connection = getConnection()) {
-      try (Statement statement = connection.createStatement()) {
+    try(Connection connection = getConnection()) {
+      try(Statement statement = connection.createStatement()) {
         statement.executeUpdate(query);
       }
-    } catch (SQLException e) {
+    } catch(SQLException e) {
       databaseLogger.warning("Failed to execute update: " + query);
     }
   }
@@ -101,11 +101,11 @@ public class MysqlDatabase {
   public void shutdownConnPool() {
     try {
       databaseLogger.info("Shutting down connection pool. Trying to close all connections.");
-      if (!hikariDataSource.isClosed()) {
+      if(!hikariDataSource.isClosed()) {
         hikariDataSource.close();
         databaseLogger.info("Pool successfully shutdown. ");
       }
-    } catch (Exception e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
   }
@@ -113,7 +113,7 @@ public class MysqlDatabase {
   public Connection getConnection() {
     try {
       return hikariDataSource.getConnection();
-    } catch (Exception e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
     return null;

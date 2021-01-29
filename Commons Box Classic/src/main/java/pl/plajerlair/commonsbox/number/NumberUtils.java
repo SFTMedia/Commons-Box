@@ -14,7 +14,7 @@ public class NumberUtils {
     try {
       Integer.parseInt(s);
       return true;
-    } catch (NumberFormatException ex) {
+    } catch(NumberFormatException ex) {
       return false;
     }
   }
@@ -23,7 +23,7 @@ public class NumberUtils {
     try {
       Double.parseDouble(s);
       return true;
-    } catch (NumberFormatException ex) {
+    } catch(NumberFormatException ex) {
       return false;
     }
   }
@@ -37,7 +37,7 @@ public class NumberUtils {
    * @throws IllegalArgumentException when places to round is lower than 0
    */
   public static double round(double value, int places) {
-    if (places < 0) {
+    if(places < 0) {
       throw new IllegalArgumentException();
     }
 

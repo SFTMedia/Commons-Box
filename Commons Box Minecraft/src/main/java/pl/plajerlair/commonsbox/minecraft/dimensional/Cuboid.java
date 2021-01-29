@@ -1,16 +1,16 @@
 package pl.plajerlair.commonsbox.minecraft.dimensional;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Cuboid {
 
@@ -36,9 +36,9 @@ public class Cuboid {
 
   public List<Block> blockList() {
     final List<Block> bL = new ArrayList<>(getTotalBlockSize());
-    for (int x = xMin; x <= xMax; ++x) {
-      for (int y = yMin; y <= yMax; ++y) {
-        for (int z = zMin; z <= zMax; ++z) {
+    for(int x = xMin; x <= xMax; ++x) {
+      for(int y = yMin; y <= yMax; ++y) {
+        for(int z = zMin; z <= zMax; ++z) {
           final Block b = world.getBlockAt(x, y, z);
           bL.add(b);
         }
@@ -49,9 +49,9 @@ public class Cuboid {
 
   public List<Block> blockListWithoutFloor() {
     final List<Block> bL = new ArrayList<>(getTotalBlockSize() - (getXWidth() * getZWidth()));
-    for (int x = xMin; x <= xMax; ++x) {
-      for (int y = yMin + 1; y <= yMax; ++y) {
-        for (int z = zMin; z <= zMax; ++z) {
+    for(int x = xMin; x <= xMax; ++x) {
+      for(int y = yMin + 1; y <= yMax; ++y) {
+        for(int z = zMin; z <= zMax; ++z) {
           final Block b = world.getBlockAt(x, y, z);
           bL.add(b);
         }
@@ -62,8 +62,8 @@ public class Cuboid {
 
   public List<Block> floorBlockList() {
     final List<Block> bL = new ArrayList<>(getXWidth() * getZWidth());
-    for (int x = xMin; x <= xMax; ++x) {
-      for (int z = zMin; z <= zMax; ++z) {
+    for(int x = xMin; x <= xMax; ++x) {
+      for(int z = zMin; z <= zMax; ++z) {
         final Block b = world.getBlockAt(x, yMin, z);
         bL.add(b);
       }
@@ -73,8 +73,8 @@ public class Cuboid {
 
   public List<Chunk> chunkList() {
     final List<Chunk> chunks = new ArrayList<>();
-    for (Block block : blockList()) {
-      if (!chunks.contains(block.getChunk())) {
+    for(Block block : blockList()) {
+      if(!chunks.contains(block.getChunk())) {
         chunks.add(block.getChunk());
       }
     }
@@ -140,8 +140,8 @@ public class Cuboid {
   }
 
   public boolean isEmpty() {
-    for (Block block : blockList()) {
-      if (block.getType() != Material.AIR) {
+    for(Block block : blockList()) {
+      if(block.getType() != Material.AIR) {
         return false;
       }
     }
@@ -149,8 +149,8 @@ public class Cuboid {
   }
 
   public boolean contains(final Material material) {
-    for (Block block : blockList()) {
-      if (block.getType() == material) {
+    for(Block block : blockList()) {
+      if(block.getType() == material) {
         return true;
       }
     }
@@ -158,34 +158,31 @@ public class Cuboid {
   }
 
   public void fill(final Material material) {
-    for (Block block : blockList()) {
+    for(Block block : blockList()) {
       block.setType(material);
     }
   }
 
   public void fillWithoutFloor(final Material material) {
-    for (Block block : blockListWithoutFloor()) {
+    for(Block block : blockListWithoutFloor()) {
       block.setType(material);
     }
   }
 
-  public void fillFloor(final Material material){
-    for (Block block : floorBlockList()) {
+  public void fillFloor(final Material material) {
+    for(Block block : floorBlockList()) {
       block.setType(material);
     }
   }
 
   public boolean collidesWith(final Cuboid other) {
-    if (xMax < other.xMin || xMin > other.xMax) {
+    if(xMax < other.xMin || xMin > other.xMax) {
       return false;
     }
-    if (yMax < other.yMin || yMin > other.yMax) {
+    if(yMax < other.yMin || yMin > other.yMax) {
       return false;
     }
-    if (zMax < other.zMin || zMin > other.zMax) {
-      return false;
-    }
-    return true;
+    return zMax >= other.zMin && zMin <= other.zMax;
   }
 
   public static boolean collidesWith(final Cuboid left, final Cuboid right) {
