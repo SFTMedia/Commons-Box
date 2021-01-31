@@ -21,7 +21,10 @@ public class ServerVersion {
     v1_16_R2,
     v1_16_R3,
     v1_17_R1,
-    v1_17_R2;
+    v1_17_R2,
+    v1_18_R1,
+    v1_18_R2,
+    ;
 
     private final Integer value;
     private final String shortVersion;
@@ -57,6 +60,10 @@ public class ServerVersion {
           current = one;
           break;
         }
+      }
+
+      if (current == null) { // If we forgot to add new version to enum
+        current = Version.v1_11_R1;
       }
 
       return current;
