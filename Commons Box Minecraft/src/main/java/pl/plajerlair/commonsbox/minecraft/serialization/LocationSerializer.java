@@ -3,7 +3,6 @@ package pl.plajerlair.commonsbox.minecraft.serialization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,9 +53,6 @@ public class LocationSerializer {
     }
     String[] loc = path.split(",");
     World world = Bukkit.getServer().getWorld(loc[0]);
-    if(world == null) {
-      world = Bukkit.createWorld(new WorldCreator(loc[0]));
-    }
     double x = Double.parseDouble(loc[1]);
     double y = Double.parseDouble(loc[2]);
     double z = Double.parseDouble(loc[3]);
@@ -75,7 +71,7 @@ public class LocationSerializer {
    * @return location saved to string
    */
   public static String locationToString(Location location) {
-    return location.getWorld().getName() + "," + location.getX() + "," + location.getY() + "," + location.getZ();
+    return location == null ? "null" : (location.getWorld() == null ? "null" : location.getWorld().getName()) + "," + location.getX() + "," + location.getY() + "," + location.getZ();
   }
 
 }

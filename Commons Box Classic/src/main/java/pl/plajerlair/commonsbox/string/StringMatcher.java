@@ -74,6 +74,7 @@ public class StringMatcher {
       return this.match;
     }
 
+    @Override
     public int compareTo(Match other) {
       return Integer.compare(other.length, this.length);
     }

@@ -156,9 +156,8 @@ public class MiscUtils {
     FireworkMeta fwm = fw.getFireworkMeta();
 
     //Get the type
-    int rt = random.nextInt(4) + 1;
     FireworkEffect.Type type;
-    switch(rt) {
+    switch(random.nextInt(4) + 1) {
       case 1:
         type = FireworkEffect.Type.BALL;
         break;
