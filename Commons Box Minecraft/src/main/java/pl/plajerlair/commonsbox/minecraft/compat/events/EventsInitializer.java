@@ -30,7 +30,7 @@ import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion;
 public class EventsInitializer {
 
   public void initialize(JavaPlugin plugin) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_10_R2)) {
       new LegacyEvents(plugin);
     } else {
       new Events(plugin);
