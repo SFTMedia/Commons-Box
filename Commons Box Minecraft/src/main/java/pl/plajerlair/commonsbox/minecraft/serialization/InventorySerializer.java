@@ -14,7 +14,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion;
 import pl.plajerlair.commonsbox.minecraft.compat.VersionUtils;
 
 import java.io.File;
@@ -168,7 +167,7 @@ public class InventorySerializer {
         player.setLevel(0);
         player.setLevel(invConfig.getInt("ExperienceLevel"));
         player.setExp(Float.parseFloat(invConfig.getString("ExperienceProgress")));
-        player.setMaxHealth(invConfig.getDouble("Current health"));
+        player.setHealth(invConfig.getDouble("Current health"));
         player.setFoodLevel(invConfig.getInt("Food"));
         player.setSaturation(Float.parseFloat(invConfig.getString("Saturation")));
         player.setFireTicks(invConfig.getInt("Fire ticks"));

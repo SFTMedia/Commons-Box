@@ -3,8 +3,6 @@ package pl.plajerlair.commonsbox.minecraft.compat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * @author Plajer
  * <p>
@@ -17,7 +15,7 @@ public class PacketUtils {
       Object handle = player.getClass().getMethod("getHandle").invoke(player);
       Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
       playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
-    } catch(InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException ex) {
+    } catch (ReflectiveOperationException ex) {
       ex.printStackTrace();
     }
   }

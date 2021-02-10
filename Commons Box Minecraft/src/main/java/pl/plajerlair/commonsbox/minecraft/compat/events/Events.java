@@ -1,7 +1,6 @@
 package pl.plajerlair.commonsbox.minecraft.compat.events;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,10 +18,7 @@ import pl.plajerlair.commonsbox.minecraft.compat.events.api.CBPlayerSwapHandItem
  */
 public class Events implements Listener {
 
-  private final JavaPlugin plugin;
-
   public Events(JavaPlugin plugin) {
-    this.plugin = plugin;
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
   }
 
