@@ -1,12 +1,10 @@
 package pl.plajerlair.commonsbox.minecraft.compat.events.api;
 
-import com.sun.tools.javac.jvm.Items;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-public class CBPlayerSwapHandItemsEvent extends VersionEvent implements Cancellable {
+public class CBPlayerSwapHandItemsEvent extends VersionEvent {
 
   private static final HandlerList handlers = new HandlerList();
   private final ItemStack mainHandItem;

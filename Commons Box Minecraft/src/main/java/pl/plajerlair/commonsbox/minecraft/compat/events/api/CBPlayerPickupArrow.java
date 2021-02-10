@@ -1,14 +1,11 @@
 package pl.plajerlair.commonsbox.minecraft.compat.events.api;
 
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-public class CBPlayerPickupArrow extends VersionEvent implements Cancellable {
+public class CBPlayerPickupArrow extends VersionEvent {
 
   private static final HandlerList handlers = new HandlerList();
   private final Item item;

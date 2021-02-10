@@ -3,15 +3,17 @@ package pl.plajerlair.commonsbox.minecraft.compat;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
+import pl.plajerlair.commonsbox.minecraft.misc.MiscUtils;
+
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.getNMSClass;
+import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 
 public class VersionUtils {
 
@@ -26,7 +28,6 @@ public class VersionUtils {
       sender.spigot().sendMessage(component);
     }
   }
-
 
   public static void setGlowing(Player player, boolean value) {
     if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
@@ -45,25 +46,28 @@ public class VersionUtils {
   public static double getHealth(Player player) {
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
       return player.getMaxHealth();
-    } else {
-      return player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getValue();
     }
+
+    if (MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).isPresent()) {
+      return MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).get().getValue();
+    }
+
+    return 0D;
   }
 
   public static void setMaxHealth(Player player, double health) {
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
       player.setMaxHealth(health);
     } else {
-      player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
+      MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).ifPresent(ai -> ai.setBaseValue(health));
     }
   }
 
   public static ItemStack getItemInHand(Player player) {
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
       return player.getItemInHand();
-    } else {
-      return player.getInventory().getItemInMainHand();
     }
+    return player.getInventory().getItemInMainHand();
   }
 
   public static void sendActionBar(Player player, String message) {
@@ -73,13 +77,12 @@ public class VersionUtils {
 
         Object icbc = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + message + "\"}");
         Object packet = constructor.newInstance(icbc, (byte) 2);
-        Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
-        Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
-
-        playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
-      } catch(NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException | InstantiationException | InvocationTargetException e) {
+        sendPacket(player, packet);
+      } catch(ReflectiveOperationException e) {
         e.printStackTrace();
       }
+    } else if (ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_16_R3)) {
+      player.spigot().sendMessage(ChatMessageType.ACTION_BAR, player.getUniqueId(), new ComponentBuilder(message).create());
     } else {
       player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder(message).create());
     }
@@ -101,10 +104,7 @@ public class VersionUtils {
 
         Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0], getNMSClass("IChatBaseComponent"), int.class, int.class, int.class);
         Object packet = titleConstructor.newInstance(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("TITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime);
-
-        Object handle = player.getClass().getMethod("getHandle").invoke(player);
-        Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
-        playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+        sendPacket(player, packet);
       } catch(Exception ignored) {
       }
     } else {
@@ -119,10 +119,7 @@ public class VersionUtils {
 
         Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0], getNMSClass("IChatBaseComponent"), int.class, int.class, int.class);
         Object packet = titleConstructor.newInstance(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("SUBTITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime);
-
-        Object handle = player.getClass().getMethod("getHandle").invoke(player);
-        Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
-        playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+        sendPacket(player, packet);
       } catch(Exception ignored) {
       }
     } else {

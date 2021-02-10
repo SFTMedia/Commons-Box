@@ -82,16 +82,6 @@ public class MiscUtils {
     return meta;
   }
 
-  public static void sendActionBar(Player player, String message) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_16_R3)) {
-      player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
-          player.getUniqueId(), new net.md_5.bungee.api.chat.ComponentBuilder(message).create());
-    } else {
-      player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
-          new net.md_5.bungee.api.chat.ComponentBuilder(message).create());
-    }
-  }
-
   // https://www.spigotmc.org/threads/comprehensive-particle-spawning-guide-1-13.343001/
   public static void spawnParticle(Particle particle, Location loc, int count, double offsetX, double offsetY, double offsetZ, double extra) {
     if(Version.isCurrentEqualOrHigher(Version.v1_13_R2) && particle == Particle.REDSTONE) {

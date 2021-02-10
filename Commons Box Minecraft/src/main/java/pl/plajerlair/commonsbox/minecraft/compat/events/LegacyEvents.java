@@ -15,10 +15,7 @@ import pl.plajerlair.commonsbox.minecraft.compat.events.api.CBPlayerPickupArrow;
  */
 public class LegacyEvents implements Listener {
 
-  private final JavaPlugin plugin;
-
   public LegacyEvents(JavaPlugin plugin) {
-    this.plugin = plugin;
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
   }
 
