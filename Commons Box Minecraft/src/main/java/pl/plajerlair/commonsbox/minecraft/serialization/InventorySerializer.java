@@ -3,7 +3,6 @@ package pl.plajerlair.commonsbox.minecraft.serialization;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -15,6 +14,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion;
+import pl.plajerlair.commonsbox.minecraft.compat.VersionUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class InventorySerializer {
       invConfig.set("ExperienceProgress", player.getExp());
       invConfig.set("ExperienceLevel", player.getLevel());
       invConfig.set("Current health", player.getHealth());
-      invConfig.set("Max health", player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+      invConfig.set("Max health", VersionUtils.getHealth(player));
       invConfig.set("Food", player.getFoodLevel());
       invConfig.set("Saturation", player.getSaturation());
       invConfig.set("Fire ticks", player.getFireTicks());
@@ -162,12 +163,12 @@ public class InventorySerializer {
           }
         }
         player.getInventory().setArmorContents(armor);
-        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(invConfig.getDouble("Max health"));
+        VersionUtils.setMaxHealth(player, invConfig.getDouble("Max health"));
         player.setExp(0);
         player.setLevel(0);
         player.setLevel(invConfig.getInt("ExperienceLevel"));
         player.setExp(Float.parseFloat(invConfig.getString("ExperienceProgress")));
-        player.setHealth(invConfig.getDouble("Current health"));
+        player.setMaxHealth(invConfig.getDouble("Current health"));
         player.setFoodLevel(invConfig.getInt("Food"));
         player.setSaturation(Float.parseFloat(invConfig.getString("Saturation")));
         player.setFireTicks(invConfig.getInt("Fire ticks"));
