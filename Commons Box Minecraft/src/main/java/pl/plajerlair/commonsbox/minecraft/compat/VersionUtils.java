@@ -89,6 +89,13 @@ public class VersionUtils {
   }
 
   public static void sendTitles(Player player, String title, String subtitle, int fadeInTime, int showTime, int fadeOutTime) {
+    //avoid null on title
+    if(title == null) {
+      title = "";
+    }
+    if(subtitle == null) {
+      subtitle = "";
+    }
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
       sendTitle(player, title, fadeInTime, showTime, fadeOutTime);
       sendSubTitle(player, subtitle, fadeInTime, showTime, fadeOutTime);
