@@ -21,7 +21,7 @@ package pl.plajerlair.commonsbox.minecraft.helper;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import pl.plajerlair.commonsbox.minecraft.compat.XMaterial;
+import pl.plajerlair.commonsbox.minecraft.compat.xseries.XMaterial;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package pl.plajerlair.commonsbox.minecraft.compat;
+package pl.plajerlair.commonsbox.minecraft.compat.xseries;
 /*
  * The MIT License (MIT)
  *
