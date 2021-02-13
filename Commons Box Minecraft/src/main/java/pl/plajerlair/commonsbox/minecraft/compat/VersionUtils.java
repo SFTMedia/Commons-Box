@@ -9,16 +9,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
 import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion.Version;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticle;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticleLegacy;
@@ -44,47 +42,33 @@ public class VersionUtils {
   }
 
   public static void updateNameTagsVisibility(JavaPlugin plugin, Player player, Player other, String tag, boolean remove) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_11_R1)) {
-      Scoreboard scoreboard = other.getScoreboard();
-      if(scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
-        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-      }
-      Team team = scoreboard.getTeam(tag);
-      if(team == null) {
-        team = scoreboard.registerNewTeam(tag);
-      }
-      team.setCanSeeFriendlyInvisibles(false);
-      team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-      if(!remove) {
-        team.addEntry(player.getName());
-      } else {
-        team.removeEntry(player.getName());
-      }
-      other.setScoreboard(scoreboard);
-    } else if(remove) {
-      Entity entity = getPassenger(player);
-      if(entity != null && entity.hasMetadata(tag)) {
-        entity.remove();
-      }
-    } else {
-      //todo fix amorstand hit box prevents sword throw
-      Entity entity = getPassenger(player);
-      if(entity != null && entity.hasMetadata(tag)) {
-        return;
-      }
-      ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-      stand.setVisible(false);
-      stand.setSmall(true);
-      stand.setMarker(false);
-      stand.setMetadata(tag, new FixedMetadataValue(plugin, true)); //Optional
-      setPassenger(player, stand);
+    Scoreboard scoreboard = other.getScoreboard();
+    if(scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
+      scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     }
+    Team team = scoreboard.getTeam(tag);
+    if(team == null) {
+      team = scoreboard.registerNewTeam(tag);
+    }
+    team.setCanSeeFriendlyInvisibles(false);
+    if(Version.isCurrentEqualOrHigher(Version.v1_11_R1)) {
+      team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+    } else {
+      team.setNameTagVisibility(NameTagVisibility.NEVER);
+    }
+    if(!remove) {
+      team.addEntry(player.getName());
+    } else {
+      team.removeEntry(player.getName());
+    }
+    other.setScoreboard(scoreboard);
   }
 
+
   public static Entity getPassenger(Entity ent) {
-    if (Version.isCurrentLower(Version.v1_13_R2)) {
+    if(Version.isCurrentLower(Version.v1_13_R2)) {
       return ent.getPassenger();
-    } else if (!ent.getPassengers().isEmpty()) {
+    } else if(!ent.getPassengers().isEmpty()) {
       return ent.getPassengers().get(0);
     }
 
@@ -119,8 +103,8 @@ public class VersionUtils {
   }
 
   public static void setPassenger(Entity to, Entity... passengers) {
-    if (Version.isCurrentLower(Version.v1_13_R2)) {
-      for (Entity ps : passengers) {
+    if(Version.isCurrentLower(Version.v1_13_R2)) {
+      for(Entity ps : passengers) {
         to.setPassenger(ps);
       }
     } else {
