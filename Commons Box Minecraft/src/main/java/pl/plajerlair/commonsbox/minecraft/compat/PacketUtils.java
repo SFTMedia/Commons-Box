@@ -22,7 +22,7 @@ public class PacketUtils {
 
   public static Class<?> getNMSClass(String nmsClassName) {
     try {
-      return Class.forName("net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace('.', ',').split(",")[3] + "." + nmsClassName);
+      return Class.forName("net.minecraft.server." + ServerVersion.Version.getPackageVersion()[3] + "." + nmsClassName);
     } catch(ClassNotFoundException ex) {
       ex.printStackTrace();
       Bukkit.getConsoleSender().sendMessage("Reflection failed for " + nmsClassName);

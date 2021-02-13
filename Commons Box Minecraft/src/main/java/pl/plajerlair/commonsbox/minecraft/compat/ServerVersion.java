@@ -35,13 +35,13 @@ public class ServerVersion {
 
     private final Integer value;
     private final String shortVersion;
-    private final String packageVersion;
+
+    private static String[] packageVersion;
     private static Version current;
 
     Version() {
       value = Integer.valueOf(name().replaceAll("[^\\d.]", ""));
       shortVersion = name().substring(0, name().length() - 3);
-      packageVersion = Bukkit.getServer().getClass().getPackage().getName().replace('.', ',').split(",")[3];
     }
 
     public Integer getValue() {
@@ -52,7 +52,11 @@ public class ServerVersion {
       return shortVersion;
     }
 
-    public String getPackageVersion() {
+    public static String[] getPackageVersion() {
+      if (packageVersion == null) {
+        packageVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
+      }
+
       return packageVersion;
     }
 
@@ -60,7 +64,7 @@ public class ServerVersion {
       if(current != null)
         return current;
 
-      String[] v = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
+      String[] v = getPackageVersion();
       String vv = v[v.length - 1];
       for(Version one : values()) {
         if(one.name().equalsIgnoreCase(vv)) {

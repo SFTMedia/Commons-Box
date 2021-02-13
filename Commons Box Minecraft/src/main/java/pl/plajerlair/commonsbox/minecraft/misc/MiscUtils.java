@@ -9,17 +9,13 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion.Version;
 
 import java.util.Optional;
@@ -36,7 +32,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("deprecation")
 public class MiscUtils {
 
-  private static final Random random = new Random();
+  private static final Random RANDOM = new Random();
 
   private MiscUtils() {
   }
@@ -97,41 +93,6 @@ public class MiscUtils {
     }
   }
 
-  public static void setDurability(ItemStack item, short durability) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-      ItemMeta meta = item.getItemMeta();
-      if(meta != null) {
-        ((Damageable) meta).setDamage(durability);
-      }
-    } else {
-      item.setDurability(durability);
-    }
-  }
-
-  public static void hidePlayer(JavaPlugin plugin, Player to, Player p) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-      to.hidePlayer(plugin, p);
-    } else {
-      to.hidePlayer(p);
-    }
-  }
-
-  public static void showPlayer(JavaPlugin plugin, Player to, Player p) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-      to.showPlayer(plugin, p);
-    } else {
-      to.showPlayer(p);
-    }
-  }
-
-  public static void setPassenger(Entity to, Entity... passengers) {
-    // setPassenger is for 1.9 and less versions
-
-    for(Entity ps : passengers) {
-      to.addPassenger(ps);
-    }
-  }
-
   public static Optional<AttributeInstance> getEntityAttribute(LivingEntity entity, Attribute attribute) {
     return Optional.ofNullable(entity.getAttribute(attribute));
   }
@@ -147,7 +108,7 @@ public class MiscUtils {
 
     //Get the type
     FireworkEffect.Type type;
-    switch(random.nextInt(4) + 1) {
+    switch(RANDOM.nextInt(4) + 1) {
       case 1:
         type = FireworkEffect.Type.BALL;
         break;
@@ -169,21 +130,20 @@ public class MiscUtils {
     }
 
     //Get our random colours
-    int r1i = random.nextInt(250) + 1;
-    int r2i = random.nextInt(250) + 1;
+    int r1i = RANDOM.nextInt(250) + 1;
+    int r2i = RANDOM.nextInt(250) + 1;
     Color c1 = Color.fromBGR(r1i);
     Color c2 = Color.fromBGR(r2i);
 
     //Create our effect with this
-    FireworkEffect effect = FireworkEffect.builder().flicker(random.nextBoolean()).withColor(c1).withFade(c2)
-        .with(type).trail(random.nextBoolean()).build();
+    FireworkEffect effect = FireworkEffect.builder().flicker(RANDOM.nextBoolean()).withColor(c1).withFade(c2)
+        .with(type).trail(RANDOM.nextBoolean()).build();
 
     //Then apply the effect to the meta
     fwm.addEffect(effect);
 
     //Generate some random power and set it
-    int rp = random.nextInt(2) + 1;
-    fwm.setPower(rp);
+    fwm.setPower(RANDOM.nextInt(2) + 1);
     fw.setFireworkMeta(fwm);
   }
 

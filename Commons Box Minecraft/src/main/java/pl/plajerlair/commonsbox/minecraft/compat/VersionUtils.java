@@ -12,10 +12,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
+import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion.Version;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticle;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticleLegacy;
 import pl.plajerlair.commonsbox.minecraft.misc.MiscUtils;
@@ -25,10 +29,11 @@ import java.lang.reflect.Constructor;
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.getNMSClass;
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 
+@SuppressWarnings("deprecation")
 public class VersionUtils {
 
   public static void sendParticles(String particle, Player player, Location location, int count) {
-    if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       XParticle.getParticle(particle).builder().location(location).count(count).spawn();
     } else {
       try {
@@ -38,9 +43,8 @@ public class VersionUtils {
     }
   }
 
-
   public static void updateNameTagsVisibility(JavaPlugin plugin, Player player, Player other, String tag, boolean remove) {
-    if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_11_R1)) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_11_R1)) {
       Scoreboard scoreboard = other.getScoreboard();
       if(scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -57,34 +61,77 @@ public class VersionUtils {
         team.removeEntry(player.getName());
       }
       other.setScoreboard(scoreboard);
+    } else if(remove) {
+      Entity entity = getPassenger(player);
+      if(entity != null && entity.hasMetadata(tag)) {
+        entity.remove();
+      }
     } else {
-      if(remove) {
-        Entity entity = player.getPassenger();
-        if(entity != null) {
-          if(entity.hasMetadata(tag)) {
-            entity.remove();
-          }
-        }
-      } else {
-        //todo fix amorstand hit box prevents sword throw
-        Entity entity = player.getPassenger();
-        if(entity != null) {
-          if(entity.hasMetadata(tag)) {
-            return;
-          }
-        }
-        ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-        stand.setVisible(false);
-        stand.setSmall(true);
-        stand.setMarker(false);
-        stand.setMetadata(tag, new FixedMetadataValue(plugin, true)); //Optional
-        player.setPassenger(stand);
+      //todo fix amorstand hit box prevents sword throw
+      Entity entity = getPassenger(player);
+      if(entity != null && entity.hasMetadata(tag)) {
+        return;
+      }
+      ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
+      stand.setVisible(false);
+      stand.setSmall(true);
+      stand.setMarker(false);
+      stand.setMetadata(tag, new FixedMetadataValue(plugin, true)); //Optional
+      setPassenger(player, stand);
+    }
+  }
+
+  public static Entity getPassenger(Entity ent) {
+    if (Version.isCurrentLower(Version.v1_13_R2)) {
+      return ent.getPassenger();
+    } else if (!ent.getPassengers().isEmpty()) {
+      return ent.getPassengers().get(0);
+    }
+
+    return null;
+  }
+
+  public static void setDurability(ItemStack item, short durability) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
+      ItemMeta meta = item.getItemMeta();
+      if(meta != null) {
+        ((Damageable) meta).setDamage(durability);
+      }
+    } else {
+      item.setDurability(durability);
+    }
+  }
+
+  public static void hidePlayer(JavaPlugin plugin, Player to, Player p) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
+      to.hidePlayer(plugin, p);
+    } else {
+      to.hidePlayer(p);
+    }
+  }
+
+  public static void showPlayer(JavaPlugin plugin, Player to, Player p) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
+      to.showPlayer(plugin, p);
+    } else {
+      to.showPlayer(p);
+    }
+  }
+
+  public static void setPassenger(Entity to, Entity... passengers) {
+    if (Version.isCurrentLower(Version.v1_13_R2)) {
+      for (Entity ps : passengers) {
+        to.setPassenger(ps);
+      }
+    } else {
+      for(Entity ps : passengers) {
+        to.addPassenger(ps);
       }
     }
   }
 
   public static void sendTextComponent(CommandSender sender, TextComponent component) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       if(sender instanceof Player) {
         ((Player) sender).spigot().sendMessage(component);
       } else {
@@ -96,13 +143,13 @@ public class VersionUtils {
   }
 
   public static void setGlowing(Player player, boolean value) {
-    if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       player.setGlowing(value);
     }
   }
 
   public static void setCollidable(Player player, boolean value) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       player.spigot().setCollidesWithEntities(value);
     } else {
       player.setCollidable(value);
@@ -110,7 +157,7 @@ public class VersionUtils {
   }
 
   public static void setCollidable(ArmorStand stand, boolean value) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       //stand.spigot().setCollidesWithEntities(value);
     } else {
       stand.setCollidable(value);
@@ -118,7 +165,7 @@ public class VersionUtils {
   }
 
   public static double getHealth(Player player) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       return player.getMaxHealth();
     }
 
@@ -130,7 +177,7 @@ public class VersionUtils {
   }
 
   public static void setMaxHealth(Player player, double health) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       player.setMaxHealth(health);
     } else {
       MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).ifPresent(ai -> ai.setBaseValue(health));
@@ -138,14 +185,14 @@ public class VersionUtils {
   }
 
   public static ItemStack getItemInHand(Player player) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       return player.getItemInHand();
     }
     return player.getInventory().getItemInMainHand();
   }
 
   public static void sendActionBar(Player player, String message) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       try {
         Constructor<?> constructor = getNMSClass("PacketPlayOutChat").getConstructor(getNMSClass("IChatBaseComponent"), byte.class);
 
@@ -155,7 +202,7 @@ public class VersionUtils {
       } catch(ReflectiveOperationException e) {
         e.printStackTrace();
       }
-    } else if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_16_R3)) {
+    } else if(Version.isCurrentEqualOrHigher(Version.v1_16_R3)) {
       player.spigot().sendMessage(ChatMessageType.ACTION_BAR, player.getUniqueId(), new ComponentBuilder(message).create());
     } else {
       player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder(message).create());
@@ -171,7 +218,7 @@ public class VersionUtils {
     if(subtitle == null) {
       subtitle = "";
     }
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       sendTitle(player, title, fadeInTime, showTime, fadeOutTime);
       sendSubTitle(player, subtitle, fadeInTime, showTime, fadeOutTime);
     } else {
@@ -180,7 +227,7 @@ public class VersionUtils {
   }
 
   public static void sendTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       try {
         Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
 
@@ -195,7 +242,7 @@ public class VersionUtils {
   }
 
   public static void sendSubTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       try {
         Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
 
