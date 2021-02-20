@@ -58,27 +58,8 @@ public class MiscUtils {
     return s;
   }
 
-  public static SkullMeta setPlayerHead(Player player, SkullMeta meta) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_12_R1) && Bukkit.getServer().getVersion().contains("Paper")
-        && player.getPlayerProfile().hasTextures()) {
-      return CompletableFuture.supplyAsync(() -> {
-        meta.setPlayerProfile(player.getPlayerProfile());
-        return meta;
-      }).exceptionally(e -> {
-        System.err.println("Retrieving player profile of " + player.getName() + " failed!");
-        return meta;
-      }).join();
-    }
-
-    if(Version.isCurrentHigher(Version.v1_12_R1)) {
-      meta.setOwningPlayer(player);
-    } else {
-      meta.setOwner(player.getName());
-    }
-    return meta;
-  }
-
   // https://www.spigotmc.org/threads/comprehensive-particle-spawning-guide-1-13.343001/
+  @Deprecated
   public static void spawnParticle(Particle particle, Location loc, int count, double offsetX, double offsetY, double offsetZ, double extra) {
     if(Version.isCurrentEqualOrHigher(Version.v1_13_R2) && particle == Particle.REDSTONE) {
       DustOptions dustOptions = new DustOptions(Color.RED, 2);
