@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
@@ -23,12 +24,31 @@ import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticleLegacy;
 import pl.plajerlair.commonsbox.minecraft.misc.MiscUtils;
 
 import java.lang.reflect.Constructor;
+import java.util.concurrent.CompletableFuture;
 
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.getNMSClass;
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 
 @SuppressWarnings("deprecation")
 public class VersionUtils {
+
+  public static SkullMeta setPlayerHead(Player player, SkullMeta meta) {
+    if(ServerVersion.Version.isCurrentHigher(ServerVersion.Version.v1_12_R1)) {
+      if(Bukkit.getServer().getVersion().contains("Paper") && player.getPlayerProfile().hasTextures()) {
+        return CompletableFuture.supplyAsync(() -> {
+          meta.setPlayerProfile(player.getPlayerProfile());
+          return meta;
+        }).exceptionally(e -> {
+          Bukkit.getConsoleSender().sendMessage("[Commons Box] Retrieving player profile of " + player.getName() + " failed!");
+          return meta;
+        }).join();
+      }
+      meta.setOwningPlayer(player);
+    } else {
+      meta.setOwner(player.getName());
+    }
+    return meta;
+  }
 
   public static void sendParticles(String particle, Player player, Location location, int count) {
     if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
