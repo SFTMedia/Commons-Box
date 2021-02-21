@@ -1,6 +1,5 @@
 package pl.plajerlair.commonsbox.minecraft.misc;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -15,12 +14,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion.Version;
 
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +26,6 @@ import java.util.regex.Pattern;
  * <p>
  * Created at 09.03.2019
  */
-@SuppressWarnings("deprecation")
 public class MiscUtils {
 
   private static final Random RANDOM = new Random();

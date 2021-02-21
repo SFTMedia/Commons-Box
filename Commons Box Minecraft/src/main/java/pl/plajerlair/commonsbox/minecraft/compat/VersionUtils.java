@@ -61,7 +61,7 @@ public class VersionUtils {
     }
   }
 
-  public static void updateNameTagsVisibility(JavaPlugin plugin, Player player, Player other, String tag, boolean remove) {
+  public static void updateNameTagsVisibility(Player player, Player other, String tag, boolean remove) {
     Scoreboard scoreboard = other.getScoreboard();
     if(scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
       scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
