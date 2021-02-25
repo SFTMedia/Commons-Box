@@ -174,18 +174,17 @@ public class MiscUtils {
     Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
     Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] This plugin was created by §6Plugily Projects §ras part of an §6open source project§r ( https://donate.plugily.xyz )");
     if(disclaimer) {
-      if(!ServerVersion.Version.isCurrentEqual(Version.v0_0_R0) && !ServerVersion.Version.isCurrentLower(Version.v1_12_R1)) {
-        return;
-      }
-      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
-      if(ServerVersion.Version.isCurrentEqual(Version.v0_0_R0)) {
-        Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cIt seems like our system does not know your Server version, you should contact our support!");
-      }
-      if(ServerVersion.Version.isCurrentLower(Version.v1_12_R1)) {
-        Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cWe noticed that you are using an older version of Minecraft.");
-        Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cPlease keep in mind that newer versions will help improving the security and performance of your server.");
-        if(ServerVersion.Version.isCurrentLower(Version.v1_11_R1)) {
-          Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cWe do not give official support for old Minecraft versions as they are to outdated and slow down dev progress!");
+      if(ServerVersion.Version.isCurrentEqual(Version.v0_0_R0) || ServerVersion.Version.isCurrentLower(Version.v1_12_R1)) {
+        Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+        if(ServerVersion.Version.isCurrentEqual(Version.v0_0_R0)) {
+          Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cIt seems like our system does not know your Server version, you should contact our support!");
+        }
+        if(ServerVersion.Version.isCurrentLower(Version.v1_12_R1)) {
+          Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cWe noticed that you are using an older version of Minecraft.");
+          Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cPlease keep in mind that newer versions will help improving the security and performance of your server.");
+          if(ServerVersion.Version.isCurrentLower(Version.v1_11_R1)) {
+            Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cWe do not give official support for old Minecraft versions as they are to outdated and slow down dev progress!");
+          }
         }
       }
     }
