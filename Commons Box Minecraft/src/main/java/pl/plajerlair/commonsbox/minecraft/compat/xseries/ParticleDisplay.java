@@ -25,7 +25,6 @@ package pl.plajerlair.commonsbox.minecraft.compat.xseries;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -60,10 +59,10 @@ import java.util.concurrent.Callable;
  */
 public class ParticleDisplay implements Cloneable {
   private static final boolean ISFLAT = XParticle.getParticle("FOOTSTEP") == null;
-  private static final Particle DEFAULT_PARTICLE = Particle.CLOUD;
+  private static final org.bukkit.Particle DEFAULT_PARTICLE = org.bukkit.Particle.CLOUD;
 
   @Nonnull
-  public Particle particle;
+  public org.bukkit.Particle particle;
   @Nullable
   public Location location;
   @Nullable
@@ -88,7 +87,7 @@ public class ParticleDisplay implements Cloneable {
    * @param offsetz  the z offset.
    * @param extra    in most cases extra is the speed of the particles.
    */
-  public ParticleDisplay(@Nonnull Particle particle, @Nullable Callable<Location> locationCaller, @Nullable Location location, int count,
+  public ParticleDisplay(@Nonnull org.bukkit.Particle particle, @Nullable Callable<Location> locationCaller, @Nullable Location location, int count,
                          double offsetx, double offsety, double offsetz, double extra) {
     this.particle = particle;
     this.location = location;
@@ -100,15 +99,15 @@ public class ParticleDisplay implements Cloneable {
     this.extra = extra;
   }
 
-  public ParticleDisplay(@Nonnull Particle particle, @Nullable Location location, int count, double offsetx, double offsety, double offsetz) {
+  public ParticleDisplay(@Nonnull org.bukkit.Particle particle, @Nullable Location location, int count, double offsetx, double offsety, double offsetz) {
     this(particle, null, location, count, offsetx, offsety, offsetz, 0);
   }
 
-  public ParticleDisplay(@Nonnull Particle particle, @Nullable Location location, int count) {
+  public ParticleDisplay(@Nonnull org.bukkit.Particle particle, @Nullable Location location, int count) {
     this(particle, location, count, 0, 0, 0);
   }
 
-  public ParticleDisplay(@Nonnull Particle particle, @Nullable Location location) {
+  public ParticleDisplay(@Nonnull org.bukkit.Particle particle, @Nullable Location location) {
     this(particle, location, 0);
   }
 
@@ -119,12 +118,11 @@ public class ParticleDisplay implements Cloneable {
    * @param location the location of the display.
    * @param size     the size of the dust.
    * @return a redstone colored dust.
-   * @see #simple(Location, Particle)
    * @since 1.0.0
    */
   @Nonnull
   public static ParticleDisplay colored(@Nullable Location location, int r, int g, int b, float size) {
-    ParticleDisplay dust = new ParticleDisplay(Particle.REDSTONE, null, location, 1, 0, 0, 0, 0);
+    ParticleDisplay dust = new ParticleDisplay(org.bukkit.Particle.REDSTONE, null, location, 1, 0, 0, 0, 0);
     dust.data = new float[]{r, g, b, size};
     return dust;
   }
@@ -159,7 +157,7 @@ public class ParticleDisplay implements Cloneable {
    * @since 1.0.0
    */
   @Nonnull
-  public static ParticleDisplay simple(@Nullable Location location, @Nonnull Particle particle) {
+  public static ParticleDisplay simple(@Nullable Location location, @Nonnull org.bukkit.Particle particle) {
     Objects.requireNonNull(particle, "Cannot build ParticleDisplay with null particle");
     return new ParticleDisplay(particle, null, location, 1, 0, 0, 0, 0);
   }
@@ -178,7 +176,7 @@ public class ParticleDisplay implements Cloneable {
    * @since 1.0.0
    */
   @Nonnull
-  public static ParticleDisplay display(@Nonnull Location location, @Nonnull Particle particle) {
+  public static ParticleDisplay display(@Nonnull Location location, @Nonnull org.bukkit.Particle particle) {
     Objects.requireNonNull(location, "Cannot display particle in null location");
     ParticleDisplay display = simple(location, particle);
     display.spawn();
@@ -212,7 +210,7 @@ public class ParticleDisplay implements Cloneable {
     Objects.requireNonNull(config, "Cannot parse ParticleDisplay from a null config section");
 
     String particleName = config.getString("particle");
-    Particle particle = particleName == null ? null : XParticle.getParticle(particleName);
+    org.bukkit.Particle particle = particleName == null ? null : XParticle.getParticle(particleName);
     int count = config.getInt("count");
     double extra = config.getDouble("extra");
 
@@ -570,7 +568,7 @@ public class ParticleDisplay implements Cloneable {
       if(data instanceof float[]) {
         float[] datas = (float[]) data;
         if(ISFLAT) {
-          Particle.DustOptions dust = new Particle.DustOptions(org.bukkit.Color
+          org.bukkit.Particle.DustOptions dust = new org.bukkit.Particle.DustOptions(org.bukkit.Color
               .fromRGB((int) datas[0], (int) datas[1], (int) datas[2]), datas[3]);
           if(players == null)
             loc.getWorld().spawnParticle(particle, loc, count, offsetx, offsety, offsetz, extra, dust);

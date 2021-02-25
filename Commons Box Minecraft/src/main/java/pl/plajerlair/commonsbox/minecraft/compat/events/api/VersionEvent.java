@@ -39,4 +39,5 @@ public abstract class VersionEvent extends Event implements Cancellable {
   public void setCancelled(boolean cancelled) {
     this.isCancelled = cancelled;
   }
+
 }

@@ -4,12 +4,14 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,13 +26,20 @@ import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticleLegacy;
 import pl.plajerlair.commonsbox.minecraft.misc.MiscUtils;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.getNMSClass;
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 
 @SuppressWarnings("deprecation")
 public class VersionUtils {
+
+  public static boolean checkOffHand(EquipmentSlot equipmentSlot) {
+    return Version.isCurrentEqualOrHigher(Version.v1_9_R1) && equipmentSlot == EquipmentSlot.OFF_HAND;
+  }
 
   public static SkullMeta setPlayerHead(Player player, SkullMeta meta) {
     if(ServerVersion.Version.isCurrentHigher(ServerVersion.Version.v1_12_R1)) {
@@ -58,6 +67,14 @@ public class VersionUtils {
         XParticleLegacy.valueOf(particle).sendToPlayer(player, location, 0, 0, 0, 0, count);
       } catch(Exception ignored) {
       }
+    }
+  }
+
+  public static List<String> getParticleValues() {
+    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+      return Stream.of(XParticle.getParticles()).map(Enum::toString).collect(Collectors.toList());
+    } else {
+      return Stream.of(XParticleLegacy.values()).map(Enum::toString).collect(Collectors.toList());
     }
   }
 
@@ -177,7 +194,7 @@ public class VersionUtils {
       return MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).get().getValue();
     }
 
-    return 0D;
+    return 20D;
   }
 
   public static void setMaxHealth(Player player, double health) {

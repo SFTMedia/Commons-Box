@@ -1,11 +1,10 @@
 package pl.plajerlair.commonsbox.minecraft.misc;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Particle.DustOptions;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
@@ -14,6 +13,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion;
 import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion.Version;
 
 import java.util.Optional;
@@ -56,14 +58,14 @@ public class MiscUtils {
 
   // https://www.spigotmc.org/threads/comprehensive-particle-spawning-guide-1-13.343001/
   @Deprecated
-  public static void spawnParticle(Particle particle, Location loc, int count, double offsetX, double offsetY, double offsetZ, double extra) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_13_R2) && particle == Particle.REDSTONE) {
-      DustOptions dustOptions = new DustOptions(Color.RED, 2);
+  public static void spawnParticle(org.bukkit.Particle particle, Location loc, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_13_R2) && particle == org.bukkit.Particle.REDSTONE) {
+      org.bukkit.Particle.DustOptions dustOptions = new org.bukkit.Particle.DustOptions(Color.RED, 2);
       loc.getWorld().spawnParticle(particle, loc, count, offsetX, offsetY, offsetZ, extra, dustOptions);
-    } else if(particle == Particle.ITEM_CRACK) {
+    } else if(particle == org.bukkit.Particle.ITEM_CRACK) {
       ItemStack itemCrackData = new ItemStack(loc.getBlock().getType());
       loc.getWorld().spawnParticle(particle, loc, count, offsetX, offsetY, offsetZ, extra, itemCrackData);
-    } else if(particle == Particle.BLOCK_CRACK || particle == Particle.BLOCK_DUST || particle == Particle.FALLING_DUST) {
+    } else if(particle == org.bukkit.Particle.BLOCK_CRACK || particle == org.bukkit.Particle.BLOCK_DUST || particle == org.bukkit.Particle.FALLING_DUST) {
       loc.getWorld().spawnParticle(particle, loc, count, offsetX, offsetY, offsetZ, extra, loc.getBlock().getType().createBlockData());
     } else {
       loc.getWorld().spawnParticle(particle, loc, count, offsetX, offsetY, offsetZ, extra);
@@ -161,6 +163,40 @@ public class MiscUtils {
       compensated += spaceLength;
     }
     player.sendMessage(sb.toString() + message);
+  }
+
+
+  public static void sendStartUpMessage(Plugin plugin, String pluginname, PluginDescriptionFile descriptionFile, boolean disclaimer, boolean support) {
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] -_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-");
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] Versions: ");
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] Plugin: §6" + descriptionFile.getVersion() + " §r| Server: §6" + plugin.getServer().getVersion() + " §r| Detected: §6" + ServerVersion.Version.getCurrent() + " §r| Software: §6" + plugin.getServer().getName() + " §r| Java: §6" + System.getProperty("java.version"));
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] This plugin was created by §6Plugily Projects §ras part of an §6open source project§r ( https://donate.plugily.xyz )");
+    if(disclaimer) {
+      if(!ServerVersion.Version.isCurrentEqual(Version.v0_0_R0) && !ServerVersion.Version.isCurrentLower(Version.v1_12_R1)) {
+        return;
+      }
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+      if(ServerVersion.Version.isCurrentEqual(Version.v0_0_R0)) {
+        Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cIt seems like our system does not know your Server version, you should contact our support!");
+      }
+      if(ServerVersion.Version.isCurrentLower(Version.v1_12_R1)) {
+        Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cWe noticed that you are using an older version of Minecraft.");
+        Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cPlease keep in mind that newer versions will help improving the security and performance of your server.");
+        if(ServerVersion.Version.isCurrentLower(Version.v1_11_R1)) {
+          Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DISCLAIMER] §cWe do not give official support for old Minecraft versions as they are to outdated and slow down dev progress!");
+        }
+      }
+    }
+    if(support && ServerVersion.Version.isCurrentEqualOrHigher(Version.v1_11_R1)) {
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][SUPPORT] If you have any problems, you can always contact us on our Discord server! ( https://discord.plugily.xyz )");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][SUPPORT] You can also check out our wiki at https://wiki.plugily.xyz");
+    }
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "]                               §6The plugin got fully enabled! Enjoy the plugin ;)");
+    Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] -_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_--_-_-_-");
   }
 
 }

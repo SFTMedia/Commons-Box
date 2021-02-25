@@ -137,6 +137,10 @@ public final class XParticle {
   private XParticle() {
   }
 
+  public static Particle[] getParticles() {
+    return Particle.values();
+  }
+
   /**
    * An optimized and stable way of getting particles for cross-version support.
    *
