@@ -4,7 +4,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
@@ -73,9 +72,9 @@ public class VersionUtils {
   public static List<String> getParticleValues() {
     if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       return Stream.of(XParticle.getParticles()).map(Enum::toString).collect(Collectors.toList());
-    } else {
-      return Stream.of(XParticleLegacy.values()).map(Enum::toString).collect(Collectors.toList());
     }
+
+    return Stream.of(XParticleLegacy.values()).map(Enum::toString).collect(Collectors.toList());
   }
 
   public static void updateNameTagsVisibility(Player player, Player other, String tag, boolean remove) {
