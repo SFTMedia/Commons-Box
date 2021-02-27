@@ -46,6 +46,8 @@ public interface Complement {
 
 	void setMotd(ServerListPingEvent event, String motd);
 
+	void kickPlayer(Player player, String message);
+
 	default void broadcastMessage(String message) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			player.sendMessage(message);

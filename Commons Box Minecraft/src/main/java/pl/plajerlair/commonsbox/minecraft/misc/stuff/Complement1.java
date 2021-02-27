@@ -92,4 +92,9 @@ public final class Complement1 implements Complement {
 	public void setMotd(ServerListPingEvent event, String motd) {
 		event.setMotd(motd);
 	}
+
+	@Override
+	public void kickPlayer(Player player, String message) {
+		player.kickPlayer(message);
+	}
 }

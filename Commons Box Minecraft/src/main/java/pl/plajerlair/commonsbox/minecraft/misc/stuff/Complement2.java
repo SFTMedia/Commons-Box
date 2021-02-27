@@ -115,4 +115,9 @@ public final class Complement2 implements Complement {
 	public void setMotd(ServerListPingEvent event, String motd) {
 		event.motd(deserialize(motd));
 	}
+
+	@Override
+	public void kickPlayer(Player player, String message) {
+		player.kick(deserialize(message));
+	}
 }
