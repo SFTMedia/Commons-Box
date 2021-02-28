@@ -6,7 +6,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
+import pl.plajerlair.commonsbox.minecraft.misc.stuff.ComplementAccessor;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class ItemBuilder {
   public ItemBuilder name(final String name) {
     final ItemMeta meta = itemStack.getItemMeta();
     if(meta != null) {
-      meta.setDisplayName(name == null ? "" : name);
+      ComplementAccessor.getComplement().setDisplayName(meta, name == null ? "" : name);
       itemStack.setItemMeta(meta);
     }
     return this;
@@ -70,11 +71,11 @@ public class ItemBuilder {
   public ItemBuilder lore(final List<String> name) {
     final ItemMeta meta = itemStack.getItemMeta();
     if(meta != null) {
-      List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+      List<String> lore = ComplementAccessor.getComplement().getLore(meta);
       if(name != null) {
         lore.addAll(name);
       }
-      meta.setLore(lore);
+      ComplementAccessor.getComplement().setLore(meta, lore);
       itemStack.setItemMeta(meta);
     }
     return this;
@@ -84,10 +85,12 @@ public class ItemBuilder {
     ItemMeta meta = itemStack.getItemMeta();
     if(meta != null) {
       if(meta.hasDisplayName()) {
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
+        ComplementAccessor.getComplement().setDisplayName(meta,
+            ChatColor.translateAlternateColorCodes('&', ComplementAccessor.getComplement().getDisplayName(meta)));
       }
       if(meta.hasLore()) {
-        meta.setLore(meta.getLore().stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+        ComplementAccessor.getComplement().setLore(meta, ComplementAccessor.getComplement().getLore(meta).stream()
+            .map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
       }
     }
     return this;

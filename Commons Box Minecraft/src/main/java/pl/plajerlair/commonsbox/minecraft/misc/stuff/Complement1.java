@@ -1,5 +1,6 @@
 package pl.plajerlair.commonsbox.minecraft.misc.stuff;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -70,7 +71,7 @@ public final class Complement1 implements Complement {
 
 	@Override
 	public List<String> getLore(ItemMeta meta) {
-		return meta.getLore();
+		return meta.hasLore() ? meta.getLore() : new ArrayList<>();
 	}
 
 	@Override
