@@ -57,7 +57,7 @@ public class Events implements Listener {
 
   @EventHandler
   public void onPlayerInteractEvent(PlayerInteractEvent event) {
-    CBPlayerInteractEvent cbEvent = new CBPlayerInteractEvent(event.getPlayer(), event.getItem(), event.getHand(), event.getAction(), event.getBlockFace(), event.getClickedBlock(), event.getInteractionPoint(), event.getMaterial());
+    CBPlayerInteractEvent cbEvent = new CBPlayerInteractEvent(event.getPlayer(), event.getItem(), event.getHand(), event.getAction(), event.getBlockFace(), event.getClickedBlock(), event.getMaterial(),  event.hasItem(), event.hasBlock());
     Bukkit.getPluginManager().callEvent(cbEvent);
     if(cbEvent.isCancelled()) {
       event.setCancelled(true);

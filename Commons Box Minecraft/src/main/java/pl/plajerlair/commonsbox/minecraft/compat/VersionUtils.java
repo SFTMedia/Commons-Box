@@ -9,6 +9,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,7 @@ import pl.plajerlair.commonsbox.minecraft.misc.MiscUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,6 +66,28 @@ public class VersionUtils {
     } else {
       try {
         XParticleLegacy.valueOf(particle).sendToPlayer(player, location, 0, 0, 0, 0, count);
+      } catch(Exception ignored) {
+      }
+    }
+  }
+
+  public static void sendParticles(String particle, Set<Player> players, Location location, int count) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+      XParticle.getParticle(particle).builder().location(location).count(count).spawn();
+    } else {
+      try {
+        XParticleLegacy.valueOf(particle).sendToPlayers(players == null ? Bukkit.getOnlinePlayers() : players, location, 0, 0, 0, 0, count, true);
+      } catch(Exception ignored) {
+      }
+    }
+  }
+
+  public static void sendParticles(String particle, Set<Player> players, Location location, int count, double offsetX, double offsetY, double offsetZ) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+      XParticle.getParticle(particle).builder().location(location).count(count).offset(offsetX, offsetY, offsetZ).spawn();
+    } else {
+      try {
+        XParticleLegacy.valueOf(particle).sendToPlayers(players == null ? Bukkit.getOnlinePlayers() : players, location, (float) offsetX, (float) offsetY, (float) offsetZ, 0, count, true);
       } catch(Exception ignored) {
       }
     }
@@ -184,6 +208,7 @@ public class VersionUtils {
     }
   }
 
+  @Deprecated //bad naming
   public static double getHealth(Player player) {
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       return player.getMaxHealth();
@@ -196,11 +221,43 @@ public class VersionUtils {
     return 20D;
   }
 
+  public static double getMaxHealth(Player player) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+      return player.getMaxHealth();
+    }
+
+    if(MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).isPresent()) {
+      return MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).get().getValue();
+    }
+
+    return 20D;
+  }
+
+  public static double getMaxHealth(LivingEntity entity) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+      return entity.getMaxHealth();
+    }
+
+    if(MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MAX_HEALTH).isPresent()) {
+      return MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MAX_HEALTH).get().getValue();
+    }
+
+    return 20D;
+  }
+
   public static void setMaxHealth(Player player, double health) {
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       player.setMaxHealth(health);
     } else {
       MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).ifPresent(ai -> ai.setBaseValue(health));
+    }
+  }
+
+  public static void setMaxHealth(LivingEntity entity, double health) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+      entity.setMaxHealth(health);
+    } else {
+      MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MAX_HEALTH).ifPresent(ai -> ai.setBaseValue(health));
     }
   }
 

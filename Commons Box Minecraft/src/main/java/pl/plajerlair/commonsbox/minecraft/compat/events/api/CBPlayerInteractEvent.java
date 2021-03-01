@@ -19,10 +19,11 @@ public class CBPlayerInteractEvent extends VersionEvent {
   private final Action action;
   private final BlockFace blockFace;
   private final Block clickedBlock;
-  private final Location interactionPoint;
   private final Material material;
+  private final boolean hasItem;
+  private final boolean hasBlock;
 
-  public CBPlayerInteractEvent(Player player, ItemStack itemStack, EquipmentSlot equipmentSlot, Action action, BlockFace blockFace, Block clickedBlock, Location interactionPoint, Material material) {
+  public CBPlayerInteractEvent(Player player, ItemStack itemStack, EquipmentSlot equipmentSlot, Action action, BlockFace blockFace, Block clickedBlock, Material material, boolean hasItem, boolean hasBlock) {
     super(false);
     this.player = player;
     this.itemStack = itemStack;
@@ -30,8 +31,9 @@ public class CBPlayerInteractEvent extends VersionEvent {
     this.action = action;
     this.blockFace = blockFace;
     this.clickedBlock = clickedBlock;
-    this.interactionPoint = interactionPoint;
     this.material = material;
+    this.hasItem = hasItem;
+    this.hasBlock = hasBlock;
   }
 
   public static HandlerList getHandlerList() {
@@ -67,11 +69,15 @@ public class CBPlayerInteractEvent extends VersionEvent {
     return clickedBlock;
   }
 
-  public Location getInteractionPoint() {
-    return interactionPoint;
-  }
-
   public Material getMaterial() {
     return material;
+  }
+
+  public boolean hasItem() {
+    return hasItem;
+  }
+
+  public boolean hasBlock() {
+    return hasBlock;
   }
 }

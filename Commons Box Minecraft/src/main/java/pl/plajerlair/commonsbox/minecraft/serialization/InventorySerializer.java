@@ -57,7 +57,7 @@ public class InventorySerializer {
       invConfig.set("ExperienceProgress", player.getExp());
       invConfig.set("ExperienceLevel", player.getLevel());
       invConfig.set("Current health", player.getHealth());
-      invConfig.set("Max health", VersionUtils.getHealth(player));
+      invConfig.set("Max health", VersionUtils.getMaxHealth(player));
       invConfig.set("Food", player.getFoodLevel());
       invConfig.set("Saturation", player.getSaturation());
       invConfig.set("Fire ticks", player.getFireTicks());
