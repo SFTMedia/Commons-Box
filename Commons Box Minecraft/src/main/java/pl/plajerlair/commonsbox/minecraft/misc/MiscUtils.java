@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 public class MiscUtils {
 
   private static final Random RANDOM = new Random();
+  private static final Pattern PATTERN = Pattern.compile("&?#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})");
 
   private MiscUtils() {
   }
@@ -40,16 +41,12 @@ public class MiscUtils {
       return s;
     }
 
-    String regex = "&?#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})";
-    Matcher matcher = Pattern.compile(regex).matcher(s);
+    Matcher matcher = PATTERN.matcher(s);
     while(matcher.find()) {
-      String group = matcher.group(0);
-      String group2 = matcher.group(1);
-
       try {
-        s = s.replace(group, net.md_5.bungee.api.ChatColor.of("#" + group2) + "");
+        s = s.replace(matcher.group(0), net.md_5.bungee.api.ChatColor.of("#" + matcher.group(1)) + "");
       } catch(Exception e) {
-        System.err.println("Bad hex color match: " + group);
+        System.err.println("Invalid hex color: " + e.getLocalizedMessage());
       }
     }
 

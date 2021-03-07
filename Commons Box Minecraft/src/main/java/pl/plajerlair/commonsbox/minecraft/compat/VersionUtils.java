@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
@@ -38,13 +39,24 @@ import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 @SuppressWarnings("deprecation")
 public class VersionUtils {
 
+  private static boolean isPaper = false;
+
+  static {
+    try {
+      Class.forName("com.destroystokyo.paper.PaperConfig");
+      isPaper = true;
+    } catch (ClassNotFoundException e) {
+      isPaper = false;
+    }
+  }
+
   public static boolean checkOffHand(EquipmentSlot equipmentSlot) {
     return Version.isCurrentEqualOrHigher(Version.v1_9_R1) && equipmentSlot == EquipmentSlot.OFF_HAND;
   }
 
   public static SkullMeta setPlayerHead(Player player, SkullMeta meta) {
     if(ServerVersion.Version.isCurrentHigher(ServerVersion.Version.v1_12_R1)) {
-      if(Bukkit.getServer().getVersion().contains("Paper") && player.getPlayerProfile().hasTextures()) {
+      if(isPaper && player.getPlayerProfile().hasTextures()) {
         return CompletableFuture.supplyAsync(() -> {
           meta.setPlayerProfile(player.getPlayerProfile());
           return meta;
@@ -61,7 +73,9 @@ public class VersionUtils {
   }
 
   public static void sendParticles(String particle, Player player, Location location, int count) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+    if (!isPaper) {
+      MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
+    } else if (Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       XParticle.getParticle(particle).builder().location(location).count(count).spawn();
     } else {
       try {
@@ -72,7 +86,9 @@ public class VersionUtils {
   }
 
   public static void sendParticles(String particle, Set<Player> players, Location location, int count) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+    if (!isPaper) {
+      MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
+    } else if (Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       XParticle.getParticle(particle).builder().location(location).count(count).spawn();
     } else {
       try {
