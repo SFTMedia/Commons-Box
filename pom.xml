@@ -7,7 +7,7 @@
     <groupId>pl.plajer</groupId>
     <artifactId>commons-box</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <modules>
         <module>Commons Box Classic</module>
         <module>Commons Box Database</module>
@@ -116,12 +116,12 @@
     <distributionManagement>
         <repository>
             <id>plugily-projects-repo</id>
-            <url>ftp://46.249.204.191</url>
+            <url>ftp://81.19.211.8</url>
         </repository>
         <site>
             <id>plugily-projects-java-docs</id>
             <name>Commons-Box</name>
-            <url>ftp://46.249.204.191</url>
+            <url>ftp://81.19.211.8</url>
         </site>
     </distributionManagement>
 
