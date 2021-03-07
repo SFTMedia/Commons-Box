@@ -161,11 +161,6 @@ public class InventorySerializer {
             armor[i] = new ItemStack(Material.AIR);
           }
         }
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
-        player.setFlySpeed(0.1f);
-        player.getActivePotionEffects().forEach(pe -> player.removePotionEffect(pe.getType()));
-
         player.getInventory().setArmorContents(armor);
         VersionUtils.setMaxHealth(player, invConfig.getDouble("Max health"));
         player.setExp(0);
