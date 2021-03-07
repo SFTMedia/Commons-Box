@@ -154,13 +154,18 @@ public class InventorySerializer {
       FileConfiguration invConfig = YamlConfiguration.loadConfiguration(file);
       try {
         ItemStack[] armor = new ItemStack[player.getInventory().getArmorContents().length];
-        for(int i = 0; i < player.getInventory().getArmorContents().length; i++) {
+        for(int i = 0; i < armor.length; i++) {
           if(invConfig.contains("Armor " + i)) {
             armor[i] = invConfig.getItemStack("Armor " + i);
           } else {
             armor[i] = new ItemStack(Material.AIR);
           }
         }
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
+        player.setFlySpeed(0.1f);
+        player.getActivePotionEffects().forEach(pe -> player.removePotionEffect(pe.getType()));
+
         player.getInventory().setArmorContents(armor);
         VersionUtils.setMaxHealth(player, invConfig.getDouble("Max health"));
         player.setExp(0);
@@ -176,7 +181,7 @@ public class InventorySerializer {
         List<String> activePotions = invConfig.getStringList("Active potion effects");
         for(String potion : activePotions) {
           String[] splited = potion.split("#");
-          player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(splited[0]), Integer.valueOf(splited[1]), Integer.valueOf(splited[2])));
+          player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(splited[0]), Integer.parseInt(splited[1]), Integer.parseInt(splited[2])));
         }
       } catch(Exception ignored) {
       }
