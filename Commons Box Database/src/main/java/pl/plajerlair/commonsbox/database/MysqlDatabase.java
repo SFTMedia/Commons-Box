@@ -20,9 +20,9 @@ public class MysqlDatabase {
   private HikariDataSource hikariDataSource;
   private final Logger databaseLogger = Logger.getLogger("CommonsBox Database");
 
-  public MysqlDatabase(String user, String password, String jdbcUrl) {
+  public MysqlDatabase(String user, String password, String jdbcUrl, long maxLifeTime) {
     databaseLogger.log(Level.INFO, "Configuring MySQL connection!");
-    configureConnPool(user, password, jdbcUrl);
+    configureConnPool(user, password, jdbcUrl, maxLifeTime);
 
     try(Connection connection = getConnection()) {
       if(connection == null) {
@@ -33,9 +33,9 @@ public class MysqlDatabase {
     }
   }
 
-  public MysqlDatabase(String user, String password, String host, String database, int port) {
+  public MysqlDatabase(String user, String password, String host, String database, int port, long maxLifeTime) {
     databaseLogger.log(Level.INFO, "Configuring MySQL connection!");
-    configureConnPool(user, password, host, database, port);
+    configureConnPool(user, password, host, database, port, maxLifeTime);
 
     try(Connection connection = getConnection()) {
       if(connection == null) {
@@ -46,11 +46,12 @@ public class MysqlDatabase {
     }
   }
 
-  private void configureConnPool(String user, String password, String jdbcUrl) {
+  private void configureConnPool(String user, String password, String jdbcUrl, long maxLifeTime) {
     try {
       databaseLogger.info("Creating HikariCP Configuration...");
       HikariDataSource config = new HikariDataSource();
       config.setJdbcUrl(jdbcUrl);
+      config.setMaxLifetime(maxLifeTime);
       config.addDataSourceProperty("user", user);
       config.addDataSourceProperty("password", password);
       hikariDataSource = config;
@@ -63,7 +64,7 @@ public class MysqlDatabase {
     }
   }
 
-  private void configureConnPool(String user, String password, String host, String database, int port) {
+  private void configureConnPool(String user, String password, String host, String database, int port, long maxLifeTime) {
     try {
       databaseLogger.info("Creating HikariCP Configuration...");
       HikariDataSource config = new HikariDataSource();
@@ -73,6 +74,7 @@ public class MysqlDatabase {
       config.addDataSourceProperty("databaseName", database);
       config.addDataSourceProperty("user", user);
       config.addDataSourceProperty("password", password);
+      config.setMaxLifetime(maxLifeTime);
       hikariDataSource = config;
       databaseLogger.info("Setting up MySQL Connection pool...");
       databaseLogger.info("Connection pool successfully configured. ");
