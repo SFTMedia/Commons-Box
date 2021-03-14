@@ -45,7 +45,7 @@ public class VersionUtils {
     try {
       Class.forName("com.destroystokyo.paper.PaperConfig");
       isPaper = true;
-    } catch (ClassNotFoundException e) {
+    } catch(ClassNotFoundException e) {
       isPaper = false;
     }
   }
@@ -73,9 +73,9 @@ public class VersionUtils {
   }
 
   public static void sendParticles(String particle, Player player, Location location, int count) {
-    if (!isPaper) {
+    if(!isPaper) {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
-    } else if (Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+    } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       XParticle.getParticle(particle).builder().location(location).count(count).spawn();
     } else {
       try {
@@ -86,9 +86,9 @@ public class VersionUtils {
   }
 
   public static void sendParticles(String particle, Set<Player> players, Location location, int count) {
-    if (!isPaper) {
+    if(!isPaper) {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
-    } else if (Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+    } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       XParticle.getParticle(particle).builder().location(location).count(count).spawn();
     } else {
       try {
@@ -282,6 +282,14 @@ public class VersionUtils {
       return player.getItemInHand();
     }
     return player.getInventory().getItemInMainHand();
+  }
+
+  public void setItemInHand(Player player, ItemStack stack) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+      player.setItemInHand(stack);
+      return;
+    }
+    player.getInventory().setItemInMainHand(stack);
   }
 
   public static void sendActionBar(Player player, String message) {
