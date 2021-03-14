@@ -54,7 +54,7 @@ public class LocationSerializer {
     }
     String[] loc = path.split(",");
     World world = Bukkit.getServer().getWorld(loc[0]);
-    if(world == null) {
+    if(!Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core") && world == null) {
       world = Bukkit.createWorld(new WorldCreator(loc[0]));
     }
     double x = Double.parseDouble(loc[1]);
