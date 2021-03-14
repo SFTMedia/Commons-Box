@@ -284,12 +284,28 @@ public class VersionUtils {
     return player.getInventory().getItemInMainHand();
   }
 
-  public void setItemInHand(Player player, ItemStack stack) {
+  public static void setItemInHand(Player player, ItemStack stack) {
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       player.setItemInHand(stack);
       return;
     }
     player.getInventory().setItemInMainHand(stack);
+  }
+
+  public static void setItemInHand(LivingEntity entity, ItemStack stack) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+      entity.getEquipment().setItemInHand(stack);
+      return;
+    }
+    entity.getEquipment().setItemInMainHand(stack);
+  }
+
+  public static void setItemInHandDropChance(LivingEntity entity, float chance) {
+    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+      entity.getEquipment().setItemInHandDropChance(chance);
+      return;
+    }
+    entity.getEquipment().setItemInMainHandDropChance(chance);
   }
 
   public static void sendActionBar(Player player, String message) {
