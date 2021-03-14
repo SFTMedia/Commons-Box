@@ -208,6 +208,12 @@ public class VersionUtils {
     }
   }
 
+  public static void setGlowing(Entity entity, boolean value) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+      entity.setGlowing(value);
+    }
+  }
+
   public static void setCollidable(Player player, boolean value) {
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       player.spigot().setCollidesWithEntities(value);
