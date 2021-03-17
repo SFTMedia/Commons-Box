@@ -76,7 +76,8 @@ public class VersionUtils {
     if(!isPaper) {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
-      XParticle.getParticle(particle).builder().location(location).count(count).spawn();
+      Particle p = XParticle.getParticle(particle);
+      p.builder().data(p.getDataType()).location(location).count(count).spawn();
     } else {
       try {
         XParticleLegacy.valueOf(particle).sendToPlayer(player, location, 0, 0, 0, 0, count);
@@ -89,7 +90,8 @@ public class VersionUtils {
     if(!isPaper) {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
-      XParticle.getParticle(particle).builder().location(location).count(count).spawn();
+      Particle p = XParticle.getParticle(particle);
+      p.builder().location(location).data(p.getDataType()).count(count).spawn();
     } else {
       try {
         XParticleLegacy.valueOf(particle).sendToPlayers(players == null ? Bukkit.getOnlinePlayers() : players, location, 0, 0, 0, 0, count, true);
@@ -100,7 +102,8 @@ public class VersionUtils {
 
   public static void sendParticles(String particle, Set<Player> players, Location location, int count, double offsetX, double offsetY, double offsetZ) {
     if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
-      XParticle.getParticle(particle).builder().location(location).count(count).offset(offsetX, offsetY, offsetZ).spawn();
+      Particle p = XParticle.getParticle(particle);
+      p.builder().location(location).data(p.getDataType()).count(count).offset(offsetX, offsetY, offsetZ).spawn();
     } else {
       try {
         XParticleLegacy.valueOf(particle).sendToPlayers(players == null ? Bukkit.getOnlinePlayers() : players, location, (float) offsetX, (float) offsetY, (float) offsetZ, 0, count, true);
@@ -232,18 +235,6 @@ public class VersionUtils {
 
   @Deprecated //bad naming
   public static double getHealth(Player player) {
-    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
-      return player.getMaxHealth();
-    }
-
-    if(MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).isPresent()) {
-      return MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).get().getValue();
-    }
-
-    return 20D;
-  }
-
-  public static double getMaxHealth(Player player) {
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       return player.getMaxHealth();
     }
