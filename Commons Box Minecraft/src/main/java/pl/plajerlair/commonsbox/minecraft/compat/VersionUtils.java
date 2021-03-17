@@ -332,7 +332,7 @@ public class VersionUtils {
     if(subtitle == null) {
       subtitle = "";
     }
-    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
       sendTitle(player, title, fadeInTime, showTime, fadeOutTime);
       sendSubTitle(player, subtitle, fadeInTime, showTime, fadeOutTime);
     } else {
@@ -341,7 +341,7 @@ public class VersionUtils {
   }
 
   public static void sendTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
-    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
       try {
         Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
 
@@ -356,7 +356,7 @@ public class VersionUtils {
   }
 
   public static void sendSubTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
-    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
       try {
         Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
 
