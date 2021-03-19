@@ -142,6 +142,11 @@ public class VersionUtils {
       return location.getBlock().getType().createBlockData();
     }
 
+    if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && (particle == Particle.LEGACY_BLOCK_CRACK
+        || particle == Particle.LEGACY_BLOCK_DUST || particle == Particle.LEGACY_FALLING_DUST)) {
+      return location.getBlock().getType().createBlockData();
+    }
+
     return null;
   }
 
