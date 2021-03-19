@@ -78,7 +78,12 @@ public class VersionUtils {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
-      p.builder().data(p.getDataType()).location(location).count(count).spawn();
+      Object dataType = getParticleDataType(p, location);
+      if (dataType == null) {
+        p.builder().location(location).count(count).spawn();
+      } else {
+        p.builder().location(location).data(dataType).count(count).spawn();
+      }
     } else {
       try {
         XParticleLegacy.valueOf(particle).sendToPlayer(player, location, 0, 0, 0, 0, count);
@@ -92,15 +97,7 @@ public class VersionUtils {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
-      Object dataType = null;
-      if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && p == Particle.REDSTONE) {
-        dataType = new Particle.DustOptions(Color.RED, 2);
-      } else if (p == Particle.ITEM_CRACK) {
-        dataType =  new ItemStack(location.getBlock().getType());
-      } else if(p == Particle.BLOCK_CRACK || p == Particle.BLOCK_DUST || p == Particle.FALLING_DUST) {
-        dataType = location.getBlock().getType().createBlockData();
-      }
-
+      Object dataType = getParticleDataType(p, location);
       if (dataType == null) {
         p.builder().location(location).count(count).spawn();
       } else {
@@ -117,15 +114,7 @@ public class VersionUtils {
   public static void sendParticles(String particle, Set<Player> players, Location location, int count, double offsetX, double offsetY, double offsetZ) {
     if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
-      Object dataType = null;
-      if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && p == Particle.REDSTONE) {
-        dataType = new Particle.DustOptions(Color.RED, 2);
-      } else if (p == Particle.ITEM_CRACK) {
-        dataType =  new ItemStack(location.getBlock().getType());
-      } else if(p == Particle.BLOCK_CRACK || p == Particle.BLOCK_DUST || p == Particle.FALLING_DUST) {
-        dataType = location.getBlock().getType().createBlockData();
-      }
-
+      Object dataType = getParticleDataType(p, location);
       if (dataType == null) {
         p.builder().location(location).count(count).offset(offsetX, offsetY, offsetZ).spawn();
       } else {
@@ -137,6 +126,23 @@ public class VersionUtils {
       } catch(Exception ignored) {
       }
     }
+  }
+
+  // Some of the particle in new versions needs their own data type
+  private static Object getParticleDataType(Particle particle, Location location) {
+    if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && particle == Particle.REDSTONE) {
+      return new Particle.DustOptions(Color.RED, 2);
+    }
+
+    if (particle == Particle.ITEM_CRACK) {
+      return new ItemStack(location.getBlock().getType());
+    }
+
+    if (particle == Particle.BLOCK_CRACK || particle == Particle.BLOCK_DUST || particle == Particle.FALLING_DUST) {
+      return location.getBlock().getType().createBlockData();
+    }
+
+    return null;
   }
 
   public static List<String> getParticleValues() {
