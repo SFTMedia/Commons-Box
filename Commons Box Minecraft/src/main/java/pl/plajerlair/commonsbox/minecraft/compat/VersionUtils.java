@@ -79,7 +79,7 @@ public class VersionUtils {
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
       Object dataType = getParticleDataType(p, location);
-      if (dataType == null) {
+      if(dataType == null) {
         p.builder().location(location).count(count).spawn();
       } else {
         p.builder().location(location).data(dataType).count(count).spawn();
@@ -98,7 +98,7 @@ public class VersionUtils {
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
       Object dataType = getParticleDataType(p, location);
-      if (dataType == null) {
+      if(dataType == null) {
         p.builder().location(location).count(count).spawn();
       } else {
         p.builder().location(location).data(dataType).count(count).spawn();
@@ -112,10 +112,12 @@ public class VersionUtils {
   }
 
   public static void sendParticles(String particle, Set<Player> players, Location location, int count, double offsetX, double offsetY, double offsetZ) {
-    if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+    if(!isPaper && Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+      MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, offsetX, offsetY, offsetZ, 0);
+    } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
       Object dataType = getParticleDataType(p, location);
-      if (dataType == null) {
+      if(dataType == null) {
         p.builder().location(location).count(count).offset(offsetX, offsetY, offsetZ).spawn();
       } else {
         p.builder().location(location).data(dataType).count(count).offset(offsetX, offsetY, offsetZ).spawn();
@@ -130,19 +132,19 @@ public class VersionUtils {
 
   // Some of the particle in new versions needs their own data type
   private static Object getParticleDataType(Particle particle, Location location) {
-    if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && particle == Particle.REDSTONE) {
+    if(Version.isCurrentEqualOrHigher(Version.v1_13_R2) && particle == Particle.REDSTONE) {
       return new Particle.DustOptions(Color.RED, 2);
     }
 
-    if (particle == Particle.ITEM_CRACK) {
+    if(particle == Particle.ITEM_CRACK) {
       return new ItemStack(location.getBlock().getType());
     }
 
-    if (particle == Particle.BLOCK_CRACK || particle == Particle.BLOCK_DUST || particle == Particle.FALLING_DUST) {
+    if(particle == Particle.BLOCK_CRACK || particle == Particle.BLOCK_DUST || particle == Particle.FALLING_DUST) {
       return location.getBlock().getType().createBlockData();
     }
 
-    if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && (particle == Particle.LEGACY_BLOCK_CRACK
+    if(Version.isCurrentEqualOrHigher(Version.v1_13_R2) && (particle == Particle.LEGACY_BLOCK_CRACK
         || particle == Particle.LEGACY_BLOCK_DUST || particle == Particle.LEGACY_FALLING_DUST)) {
       return location.getBlock().getType().createBlockData();
     }
