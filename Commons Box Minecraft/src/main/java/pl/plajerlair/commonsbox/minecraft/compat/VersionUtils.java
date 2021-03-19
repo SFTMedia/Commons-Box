@@ -74,7 +74,7 @@ public class VersionUtils {
   }
 
   public static void sendParticles(String particle, Player player, Location location, int count) {
-    if(!isPaper) {
+    if(!isPaper && Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
@@ -93,7 +93,7 @@ public class VersionUtils {
   }
 
   public static void sendParticles(String particle, Set<Player> players, Location location, int count) {
-    if(!isPaper) {
+    if(!isPaper && Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
