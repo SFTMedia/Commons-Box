@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
@@ -91,7 +92,20 @@ public class VersionUtils {
       MiscUtils.spawnParticle(Particle.valueOf(particle), location, count, 0, 0, 0, 0);
     } else if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
-      p.builder().location(location).data(p.getDataType()).count(count).spawn();
+      Object dataType = null;
+      if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && p == Particle.REDSTONE) {
+        dataType = new Particle.DustOptions(Color.RED, 2);
+      } else if (p == Particle.ITEM_CRACK) {
+        dataType =  new ItemStack(location.getBlock().getType());
+      } else if(p == Particle.BLOCK_CRACK || p == Particle.BLOCK_DUST || p == Particle.FALLING_DUST) {
+        dataType = location.getBlock().getType().createBlockData();
+      }
+
+      if (dataType == null) {
+        p.builder().location(location).count(count).spawn();
+      } else {
+        p.builder().location(location).data(dataType).count(count).spawn();
+      }
     } else {
       try {
         XParticleLegacy.valueOf(particle).sendToPlayers(players == null ? Bukkit.getOnlinePlayers() : players, location, 0, 0, 0, 0, count, true);
@@ -103,7 +117,20 @@ public class VersionUtils {
   public static void sendParticles(String particle, Set<Player> players, Location location, int count, double offsetX, double offsetY, double offsetZ) {
     if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
       Particle p = XParticle.getParticle(particle);
-      p.builder().location(location).data(p.getDataType()).count(count).offset(offsetX, offsetY, offsetZ).spawn();
+      Object dataType = null;
+      if (Version.isCurrentEqualOrHigher(Version.v1_13_R2) && p == Particle.REDSTONE) {
+        dataType = new Particle.DustOptions(Color.RED, 2);
+      } else if (p == Particle.ITEM_CRACK) {
+        dataType =  new ItemStack(location.getBlock().getType());
+      } else if(p == Particle.BLOCK_CRACK || p == Particle.BLOCK_DUST || p == Particle.FALLING_DUST) {
+        dataType = location.getBlock().getType().createBlockData();
+      }
+
+      if (dataType == null) {
+        p.builder().location(location).count(count).offset(offsetX, offsetY, offsetZ).spawn();
+      } else {
+        p.builder().location(location).data(dataType).count(count).offset(offsetX, offsetY, offsetZ).spawn();
+      }
     } else {
       try {
         XParticleLegacy.valueOf(particle).sendToPlayers(players == null ? Bukkit.getOnlinePlayers() : players, location, (float) offsetX, (float) offsetY, (float) offsetZ, 0, count, true);
