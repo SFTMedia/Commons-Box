@@ -24,20 +24,20 @@ import org.bukkit.event.Event;
 
 public abstract class VersionEvent extends Event implements Cancellable {
 
-  private boolean isCancelled;
+  private boolean cancelled;
 
-  public VersionEvent(boolean eventCancelled) {
-    isCancelled = eventCancelled;
+  public VersionEvent(boolean cancelled) {
+    this.cancelled = cancelled;
   }
 
   @Override
   public boolean isCancelled() {
-    return this.isCancelled;
+    return cancelled;
   }
 
   @Override
   public void setCancelled(boolean cancelled) {
-    this.isCancelled = cancelled;
+    this.cancelled = cancelled;
   }
 
 }

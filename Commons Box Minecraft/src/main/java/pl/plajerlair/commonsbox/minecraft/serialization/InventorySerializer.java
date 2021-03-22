@@ -72,7 +72,7 @@ public class InventorySerializer {
       }
       invConfig.set("Active potion effects", activePotions);
       if(inventory.getHolder() instanceof Player) {
-        invConfig.set("Holder", (inventory.getHolder()).getName());
+        invConfig.set("Holder", inventory.getHolder().getName());
       }
 
       ItemStack[] invContents = inventory.getContents();

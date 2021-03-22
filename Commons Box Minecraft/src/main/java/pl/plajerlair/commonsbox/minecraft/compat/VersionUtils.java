@@ -51,6 +51,10 @@ public class VersionUtils {
     }
   }
 
+  public static boolean isPaper() {
+    return isPaper;
+  }
+
   public static boolean checkOffHand(EquipmentSlot equipmentSlot) {
     return Version.isCurrentEqualOrHigher(Version.v1_9_R1) && equipmentSlot == EquipmentSlot.OFF_HAND;
   }
@@ -275,15 +279,7 @@ public class VersionUtils {
 
   @Deprecated //bad naming
   public static double getHealth(Player player) {
-    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
-      return player.getMaxHealth();
-    }
-
-    if(MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).isPresent()) {
-      return MiscUtils.getEntityAttribute(player, Attribute.GENERIC_MAX_HEALTH).get().getValue();
-    }
-
-    return 20D;
+    return getMaxHealth(player);
   }
 
   public static double getMaxHealth(LivingEntity entity) {
@@ -291,8 +287,9 @@ public class VersionUtils {
       return entity.getMaxHealth();
     }
 
-    if(MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MAX_HEALTH).isPresent()) {
-      return MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MAX_HEALTH).get().getValue();
+    java.util.Optional<org.bukkit.attribute.AttributeInstance> at = MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MAX_HEALTH);
+    if(at.isPresent()) {
+      return at.get().getValue();
     }
 
     return 20D;

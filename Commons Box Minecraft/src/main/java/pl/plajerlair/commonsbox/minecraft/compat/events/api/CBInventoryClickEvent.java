@@ -23,8 +23,7 @@ public class CBInventoryClickEvent extends VersionEvent {
   private final boolean leftClick;
   private final boolean rightClick;
   private final boolean shiftClick;
-private final InventoryView inventoryView;
-
+  private final InventoryView inventoryView;
 
   public CBInventoryClickEvent(ClickType clickType, ItemStack itemStack, Inventory clickedInventory, ItemStack cursor, int hotbarButton, InventoryAction action, int rawSlot, int slot, InventoryType.SlotType slotType, boolean leftClick, boolean rightClick, boolean shiftClick, InventoryView inventoryView) {
     super(false);
