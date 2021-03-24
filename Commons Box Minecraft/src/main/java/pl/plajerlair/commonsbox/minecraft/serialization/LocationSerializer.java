@@ -49,13 +49,16 @@ public class LocationSerializer {
    * @see #saveLoc(JavaPlugin, FileConfiguration, String, String, Location)
    */
   public static Location getLocation(String path) {
-    if(path == null || path.split(",").length == 0) {
+    String[] loc;
+    if(path == null || (loc = path.split(",")).length == 0) {
       throw new IllegalArgumentException("String from which location is retrieved cannot be null nor empty!");
     }
-    String[] loc = path.split(",");
     World world = Bukkit.getServer().getWorld(loc[0]);
     if(!Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core") && world == null) {
       world = Bukkit.createWorld(new WorldCreator(loc[0]));
+    }
+    if (loc.length == 1) {
+      throw new IllegalArgumentException("String from which location is retrieved cannot be parsed because its location is null!");
     }
     double x = Double.parseDouble(loc[1]);
     double y = Double.parseDouble(loc[2]);

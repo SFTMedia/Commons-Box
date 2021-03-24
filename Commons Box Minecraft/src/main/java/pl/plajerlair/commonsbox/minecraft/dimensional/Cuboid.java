@@ -39,8 +39,7 @@ public class Cuboid {
     for(int x = xMin; x <= xMax; ++x) {
       for(int y = yMin; y <= yMax; ++y) {
         for(int z = zMin; z <= zMax; ++z) {
-          final Block b = world.getBlockAt(x, y, z);
-          bL.add(b);
+          bL.add(world.getBlockAt(x, y, z));
         }
       }
     }
@@ -52,8 +51,7 @@ public class Cuboid {
     for(int x = xMin; x <= xMax; ++x) {
       for(int y = yMin + 1; y <= yMax; ++y) {
         for(int z = zMin; z <= zMax; ++z) {
-          final Block b = world.getBlockAt(x, y, z);
-          bL.add(b);
+          bL.add(world.getBlockAt(x, y, z));
         }
       }
     }
@@ -64,8 +62,7 @@ public class Cuboid {
     final List<Block> bL = new ArrayList<>(getXWidth() * getZWidth());
     for(int x = xMin; x <= xMax; ++x) {
       for(int z = zMin; z <= zMax; ++z) {
-        final Block b = world.getBlockAt(x, yMin, z);
-        bL.add(b);
+        bL.add(world.getBlockAt(x, yMin, z));
       }
     }
     return bL;
