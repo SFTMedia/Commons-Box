@@ -22,12 +22,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
 import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion.Version;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticle;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticleLegacy;
 import pl.plajerlair.commonsbox.minecraft.misc.MiscUtils;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -41,6 +43,7 @@ import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 public class VersionUtils {
 
   private static boolean isPaper = false;
+  private static Class<?> iChatBaseComponent;
 
   static {
     try {
@@ -49,6 +52,8 @@ public class VersionUtils {
     } catch(ClassNotFoundException e) {
       isPaper = false;
     }
+
+    iChatBaseComponent = getNMSClass("IChatBaseComponent");
   }
 
   public static boolean isPaper() {
@@ -345,11 +350,26 @@ public class VersionUtils {
   public static void sendActionBar(Player player, String message) {
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       try {
-        Constructor<?> constructor = getNMSClass("PacketPlayOutChat").getConstructor(getNMSClass("IChatBaseComponent"), byte.class);
+        Constructor<?> constructor = getNMSClass("PacketPlayOutChat").getConstructor(iChatBaseComponent, byte.class);
 
-        Object icbc = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + message + "\"}");
-        Object packet = constructor.newInstance(icbc, (byte) 2);
-        sendPacket(player, packet);
+        Method jsonComponentMethod = null;
+        Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
+        if (declaredClasses.length > 0) {
+          jsonComponentMethod = declaredClasses[0].getMethod("a", String.class);
+        }
+
+        Object packet = null;
+        if (Version.isCurrentLower(Version.v1_8_R2)) {
+          Class<?> chatSerializer = getNMSClass("ChatSerializer");
+          packet = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + message + "\"}"));
+        } else if (jsonComponentMethod != null) {
+          Object icbc = jsonComponentMethod.invoke(null, "{\"text\":\"" + message + "\"}");
+          packet = constructor.newInstance(icbc, (byte) 2);
+        }
+
+        if (packet != null) {
+          sendPacket(player, packet);
+        }
       } catch(ReflectiveOperationException e) {
         e.printStackTrace();
       }
@@ -380,11 +400,18 @@ public class VersionUtils {
   public static void sendTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
     if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
       try {
-        Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
+        Object chatTitle = null;
+        Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
+        if (declaredClasses.length > 0) {
+          chatTitle = declaredClasses[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
+        } else if (Version.isCurrentLower(Version.v1_8_R2)) {
+          Class<?> chatSerializer = getNMSClass("ChatSerializer");
+          chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
+        }
 
-        Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0], getNMSClass("IChatBaseComponent"), int.class, int.class, int.class);
-        Object packet = titleConstructor.newInstance(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("TITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime);
-        sendPacket(player, packet);
+        Class<?>[] titleDeclaredClasses = getNMSClass("PacketPlayOutTitle").getDeclaredClasses();
+        Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
+        sendPacket(player, titleConstructor.newInstance(titleDeclaredClasses[0].getField("TITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime));
       } catch(Exception ignored) {
       }
     } else {
@@ -395,11 +422,18 @@ public class VersionUtils {
   public static void sendSubTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
     if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
       try {
-        Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
+        Object chatTitle = null;
+        Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
+        if (declaredClasses.length > 0) {
+          chatTitle = declaredClasses[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
+        } else if (Version.isCurrentLower(Version.v1_8_R2)) {
+          Class<?> chatSerializer = getNMSClass("ChatSerializer");
+          chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
+        }
 
-        Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0], getNMSClass("IChatBaseComponent"), int.class, int.class, int.class);
-        Object packet = titleConstructor.newInstance(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("SUBTITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime);
-        sendPacket(player, packet);
+        Class<?>[] titleDeclaredClasses = getNMSClass("PacketPlayOutTitle").getDeclaredClasses();
+        Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
+        sendPacket(player, titleConstructor.newInstance(titleDeclaredClasses[0].getField("SUBTITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime));
       } catch(Exception ignored) {
       }
     } else {
