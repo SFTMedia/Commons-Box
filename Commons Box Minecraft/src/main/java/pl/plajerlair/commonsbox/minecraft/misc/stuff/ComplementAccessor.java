@@ -9,7 +9,7 @@ public final class ComplementAccessor {
 	static {
 		boolean kyoriSupported = false;
 		try {
-			Class.forName("net.kyori.adventure.text.Component");
+			Class.forName("net.kyori.adventure.text.serializer.plain.PlainComponentSerializer");
 			kyoriSupported = true;
 		} catch (ClassNotFoundException e) {
 		}

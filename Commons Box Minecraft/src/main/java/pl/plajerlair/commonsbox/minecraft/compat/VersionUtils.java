@@ -389,16 +389,13 @@ public class VersionUtils {
     if(subtitle == null) {
       subtitle = "";
     }
-    if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
-      sendTitle(player, title, fadeInTime, showTime, fadeOutTime);
-      sendSubTitle(player, subtitle, fadeInTime, showTime, fadeOutTime);
-    } else {
-      player.sendTitle(title, subtitle, fadeInTime, showTime, fadeOutTime);
-    }
+
+    sendTitle(player, title, fadeInTime, showTime, fadeOutTime);
+    sendSubTitle(player, subtitle, fadeInTime, showTime, fadeOutTime);
   }
 
   public static void sendTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
-    if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_10_R2)) {
       try {
         Object chatTitle = null;
         Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
@@ -420,7 +417,7 @@ public class VersionUtils {
   }
 
   public static void sendSubTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
-    if(Version.isCurrentEqualOrLower(Version.v1_9_R2)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_10_R2)) {
       try {
         Object chatTitle = null;
         Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
