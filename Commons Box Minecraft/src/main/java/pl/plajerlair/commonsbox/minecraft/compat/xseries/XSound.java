@@ -58,7 +58,7 @@ import java.util.concurrent.CompletableFuture;
  * play command: https://minecraft.gamepedia.com/Commands/play
  *
  * @author Crypto Morin
- * @version 5.1.0.1
+ * @version 5.2.0
  * @see Sound
  */
 public enum XSound {
@@ -967,7 +967,7 @@ public enum XSound {
   ENTITY_ZOMBIE_VILLAGER_DEATH,
   ENTITY_ZOMBIE_VILLAGER_HURT,
   ENTITY_ZOMBIE_VILLAGER_STEP,
-  ENTITY_ZOMBIFIED_PIGLIN_AMBIENT("ZOMBE_PIG_IDLE", "ENTITY_ZOMBIE_PIG_AMBIENT", "ENTITY_ZOMBIE_PIGMAN_AMBIENT"),
+  ENTITY_ZOMBIFIED_PIGLIN_AMBIENT("ZOMBIE_PIG_IDLE", "ENTITY_ZOMBIE_PIG_AMBIENT", "ENTITY_ZOMBIE_PIGMAN_AMBIENT"),
   ENTITY_ZOMBIFIED_PIGLIN_ANGRY("ZOMBIE_PIG_ANGRY", "ENTITY_ZOMBIE_PIG_ANGRY", "ENTITY_ZOMBIE_PIGMAN_ANGRY"),
   ENTITY_ZOMBIFIED_PIGLIN_DEATH("ZOMBIE_PIG_DEATH", "ENTITY_ZOMBIE_PIG_DEATH", "ENTITY_ZOMBIE_PIGMAN_DEATH"),
   ENTITY_ZOMBIFIED_PIGLIN_HURT("ZOMBIE_PIG_HURT", "ENTITY_ZOMBIE_PIG_HURT", "ENTITY_ZOMBIE_PIGMAN_HURT"),
@@ -1070,6 +1070,8 @@ public enum XSound {
    */
   public static final XSound[] VALUES = values();
 
+  public static final float DEFAULT_VOLUME = 1.0f, DEFAULT_PITCH = 1.0f;
+
   @Nullable
   private final Sound sound;
 
@@ -1096,6 +1098,7 @@ public enum XSound {
    * the normal RegEx + String Methods approach for both formatted and unformatted material names.
    *
    * @param name the sound name to format.
+   *
    * @return an enum name.
    * @since 1.0.0
    */
@@ -1132,6 +1135,7 @@ public enum XSound {
    * Parses the XSound with the given name.
    *
    * @param sound the name of the sound.
+   *
    * @return a matched XSound.
    * @since 1.0.0
    */
@@ -1145,6 +1149,7 @@ public enum XSound {
    * Parses the XSound with the given bukkit sound.
    *
    * @param sound the Bukkit sound.
+   *
    * @return a matched sound.
    * @throws IllegalArgumentException may be thrown as an unexpected exception.
    * @since 2.0.0
@@ -1158,6 +1163,7 @@ public enum XSound {
   /**
    * @param player the player to play the sound to.
    * @param sound  the sound to play to the player.
+   *
    * @see #play(Location, String)
    * @since 1.0.0
    */
@@ -1192,20 +1198,20 @@ public enum XSound {
    * <p>
    * This will also ignore {@code none} and {@code null} strings.
    * <p>
-   * <b>Format:</b> [LOC:]Sound, [Volume], [Pitch]<br>
-   * Where {@code LOC:} will play the sound at the location if a player is specified.
+   * <b>Format:</b> [~]Sound, [Volume], [Pitch]<br>
+   * Where {@code ~} prefix will play the sound at the location even if a player is specified.
    * A sound played at a location will be heard by everyone around.
-   * Comma separators are optional.
    * <p>
    * <b>Examples:</b>
    * <p>
    * <pre>
-   *     LOC:ENTITY_PLAYER_BURP, 2.5f, 0.5
+   *     ~ENTITY_PLAYER_BURP, 2.5f, 0.5
    *     ENTITY_PLAYER_BURP, 0.5, 1f
-   *     BURP 0.5f 1
+   *     BURP, 0.5f, 1
    *     MUSIC_END, 10f
-   *     none
-   *     null
+   *     ~MUSIC_END, 10
+   *     none (case-insensitive)
+   *     null (~)
    * </pre>
    * <p>
    *
@@ -1213,6 +1219,7 @@ public enum XSound {
    * @param location the location to play the sound to.
    * @param sound    the string of the sound with volume and pitch (if needed).
    * @param play     if the sound should be played right away.
+   *
    * @since 3.0.0
    */
   @Nullable
@@ -1222,12 +1229,11 @@ public enum XSound {
 
     return CompletableFuture.supplyAsync(() -> {
       String[] split = StringUtils.split(StringUtils.deleteWhitespace(sound), ',');
-      if (split.length == 0) split = StringUtils.split(sound, ' ');
 
       String name = split[0];
       boolean playAtLocation = player == null;
-      if (!playAtLocation && StringUtils.startsWithIgnoreCase(name, "loc:")) {
-        name = name.substring(4);
+      if (!playAtLocation && name.charAt(0) == '~') {
+        name = name.substring(1);
         playAtLocation = true;
       }
       Optional<XSound> typeOpt = matchXSound(name);
@@ -1235,8 +1241,8 @@ public enum XSound {
       Sound type = typeOpt.get().parseSound();
       if (type == null) return null;
 
-      float volume = 1.0f;
-      float pitch = 1.0f;
+      float volume = DEFAULT_VOLUME;
+      float pitch = DEFAULT_PITCH;
 
       try {
         if (split.length > 1) {
@@ -1265,6 +1271,7 @@ public enum XSound {
    * affected by this.
    *
    * @param player the player to stop all the sounds from.
+   *
    * @return the async task handling the operation.
    * @see #stopSound(Player)
    * @since 2.0.0
@@ -1299,6 +1306,7 @@ public enum XSound {
    * @param instrument  the instrument.
    * @param ascendLevel the ascend level of notes. Can only be positive and not higher than 7
    * @param delay       the delay between each play.
+   *
    * @return the async task handling the operation.
    * @since 2.0.0
    */
@@ -1369,6 +1377,7 @@ public enum XSound {
    * @param pitch  the pitch of the sound.
    * @param repeat the amount of times to repeat playing.
    * @param delay  the delay between each repeat.
+   *
    * @return the async task handling this operation.
    * @see #play(Location, float, float)
    * @since 2.0.0
@@ -1396,6 +1405,7 @@ public enum XSound {
    * Stops playing the specified sound from the player.
    *
    * @param player the player to stop playing the sound to.
+   *
    * @see #stopMusic(Player)
    * @since 2.0.0
    */
@@ -1410,10 +1420,11 @@ public enum XSound {
    * Plays a normal sound to an entity.
    *
    * @param entity the entity to play the sound to.
+   *
    * @since 1.0.0
    */
   public void play(@Nonnull Entity entity) {
-    play(entity, 1.0f, 1.0f);
+    play(entity, DEFAULT_VOLUME, DEFAULT_PITCH);
   }
 
   /**
@@ -1422,6 +1433,7 @@ public enum XSound {
    * @param entity the entity to play the sound to.
    * @param volume the volume of the sound, 1 is normal.
    * @param pitch  the pitch of the sound, 0 is normal.
+   *
    * @since 1.0.0
    */
   public void play(@Nonnull Entity entity, float volume, float pitch) {
@@ -1438,10 +1450,11 @@ public enum XSound {
    * Plays a normal sound in a location.
    *
    * @param location the location to play the sound in.
+   *
    * @since 2.0.0
    */
   public void play(@Nonnull Location location) {
-    play(location, 1.0f, 1.0f);
+    play(location, DEFAULT_VOLUME, DEFAULT_PITCH);
   }
 
   /**
@@ -1450,6 +1463,7 @@ public enum XSound {
    * @param location the location to play this sound.
    * @param volume   the volume of the sound, 1 is normal.
    * @param pitch    the pitch of the sound, 0 is normal.
+   *
    * @since 2.0.0
    */
   public void play(@Nonnull Location location, float volume, float pitch) {
@@ -1517,6 +1531,7 @@ public enum XSound {
      * Plays the sound with the updated location.
      *
      * @param updatedLocation the upated location.
+     *
      * @since 3.0.0
      */
     public void play(@Nonnull Location updatedLocation) {

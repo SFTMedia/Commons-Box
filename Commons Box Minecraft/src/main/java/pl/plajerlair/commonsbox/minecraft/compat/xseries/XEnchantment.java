@@ -38,16 +38,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Enchantment support with multiple aliases.
@@ -134,16 +125,16 @@ public enum XEnchantment {
     EntityType husk = Enums.getIfPresent(EntityType.class, "HUSK").orNull();
 
     Set<EntityType> arthorposEffective = EnumSet.of(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.SILVERFISH, EntityType.ENDERMITE);
-    if(bee != null) arthorposEffective.add(bee);
+    if (bee != null) arthorposEffective.add(bee);
     EFFECTIVE_BANE_OF_ARTHROPODS_ENTITIES = Collections.unmodifiableSet(arthorposEffective);
 
     Set<EntityType> smiteEffective = EnumSet.of(EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITHER);
-    if(phantom != null) smiteEffective.add(phantom);
-    if(drowned != null) smiteEffective.add(drowned);
-    if(witherSkeleton != null) smiteEffective.add(witherSkeleton);
-    if(skeletonHorse != null) smiteEffective.add(skeletonHorse);
-    if(stray != null) smiteEffective.add(stray);
-    if(husk != null) smiteEffective.add(husk);
+    if (phantom != null) smiteEffective.add(phantom);
+    if (drowned != null) smiteEffective.add(drowned);
+    if (witherSkeleton != null) smiteEffective.add(witherSkeleton);
+    if (skeletonHorse != null) smiteEffective.add(skeletonHorse);
+    if (stray != null) smiteEffective.add(stray);
+    if (husk != null) smiteEffective.add(husk);
     EFFECTIVE_SMITE_ENTITIES = Collections.unmodifiableSet(smiteEffective);
   }
 
@@ -163,10 +154,10 @@ public enum XEnchantment {
   @SuppressWarnings("deprecation")
   XEnchantment(boolean self, @Nonnull String... aliases) {
     Data.NAMES.put(this.name(), this);
-    for(String legacy : aliases) Data.NAMES.put(legacy, this);
+    for (String legacy : aliases) Data.NAMES.put(legacy, this);
 
     Enchantment enchantment;
-    if(Data.ISFLAT) {
+    if (Data.ISFLAT) {
       String vanilla = self ? this.name() : aliases[0];
       enchantment = Enchantment.getByKey(NamespacedKey.minecraft(vanilla.toLowerCase(Locale.ENGLISH)));
     } else enchantment = Enchantment.getByName(this.name());
@@ -178,6 +169,7 @@ public enum XEnchantment {
    * against this type of mob.
    *
    * @param type the type of the mob.
+   *
    * @return true if smite enchantment is effective against the mob, otherwise false.
    * @since 1.1.0
    */
@@ -190,6 +182,7 @@ public enum XEnchantment {
    * against this type of mob.
    *
    * @param type the type of the mob.
+   *
    * @return true if Bane of Arthropods enchantment is effective against the mob, otherwise false.
    * @since 1.1.0
    */
@@ -204,6 +197,7 @@ public enum XEnchantment {
    * the normal RegEx + String Methods approach for both formatted and unformatted material names.
    *
    * @param name the enchantment name to format.
+   *
    * @return an enum name.
    * @since 1.0.0
    */
@@ -214,14 +208,13 @@ public enum XEnchantment {
     int count = 0;
     boolean appendUnderline = false;
 
-    for(int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
       char ch = name.charAt(i);
 
-      if(!appendUnderline && count != 0 && (ch == '-' || ch == ' ' || ch == '_') && chs[count] != '_')
-        appendUnderline = true;
+      if (!appendUnderline && count != 0 && (ch == '-' || ch == ' ' || ch == '_') && chs[count] != '_') appendUnderline = true;
       else {
-        if((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
-          if(appendUnderline) {
+        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
+          if (appendUnderline) {
             chs[count++] = '_';
             appendUnderline = false;
           }
@@ -238,6 +231,7 @@ public enum XEnchantment {
    * There are also some aliases available.
    *
    * @param enchantment the name of the enchantment.
+   *
    * @return an enchantment.
    * @since 1.0.0
    */
@@ -252,6 +246,7 @@ public enum XEnchantment {
    * There are also some aliases available.
    *
    * @param enchantment the enchantment.
+   *
    * @return an enchantment.
    * @throws IllegalArgumentException may be thrown as an unexpeceted exception.
    * @since 1.0.0
@@ -279,6 +274,7 @@ public enum XEnchantment {
    *
    * @param item        the item to add the enchantment to.
    * @param enchantment the enchantment string containing the enchantment name and level (optional)
+   *
    * @return an enchanted {@link ItemStack} or the item itself without enchantment added if enchantment type is null.
    * @see #matchXEnchantment(String)
    * @since 1.0.0
@@ -286,18 +282,18 @@ public enum XEnchantment {
   @Nonnull
   public static ItemStack addEnchantFromString(@Nonnull ItemStack item, @Nullable String enchantment) {
     Objects.requireNonNull(item, "Cannot add enchantment to null ItemStack");
-    if(Strings.isNullOrEmpty(enchantment) || enchantment.equalsIgnoreCase("none")) return item;
+    if (Strings.isNullOrEmpty(enchantment) || enchantment.equalsIgnoreCase("none")) return item;
 
     String[] split = StringUtils.split(StringUtils.deleteWhitespace(enchantment), ',');
-    if(split.length == 0) split = StringUtils.split(enchantment, ' ');
+    if (split.length == 0) split = StringUtils.split(enchantment, ' ');
 
     Optional<XEnchantment> enchantOpt = matchXEnchantment(split[0]);
-    if(!enchantOpt.isPresent()) return item;
+    if (!enchantOpt.isPresent()) return item;
     Enchantment enchant = enchantOpt.get().parseEnchantment();
-    if(enchant == null) return item;
+    if (enchant == null) return item;
 
     int lvl = 1;
-    if(split.length > 1) lvl = NumberUtils.toInt(split[1]);
+    if (split.length > 1) lvl = NumberUtils.toInt(split[1]);
 
     item.addUnsafeEnchantment(enchant, lvl);
     return item;
@@ -307,6 +303,7 @@ public enum XEnchantment {
    * Gets the enchanted book of this enchantment.
    *
    * @param level the level of this enchantment.
+   *
    * @return an enchanted book.
    * @since 1.0.0
    */
@@ -374,7 +371,7 @@ public enum XEnchantment {
         Class<?> enchantmentClass = Class.forName("org.bukkit.enchantments.Enchantment");
         enchantmentClass.getDeclaredMethod("getByKey", namespacedKeyClass);
         flat = true;
-      } catch(ClassNotFoundException | NoSuchMethodException ex) {
+      } catch (ClassNotFoundException | NoSuchMethodException ex) {
         flat = false;
       }
       ISFLAT = flat;

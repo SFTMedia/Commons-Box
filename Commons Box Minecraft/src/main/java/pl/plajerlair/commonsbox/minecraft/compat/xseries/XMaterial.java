@@ -36,14 +36,7 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -352,7 +345,7 @@ public enum XMaterial {
   DARK_OAK_FENCE,
   DARK_OAK_FENCE_GATE,
   DARK_OAK_LEAVES(4, "LEAVES", "LEAVES_2"),
-  DARK_OAK_LOG(1, "LOG", "LOG_2"),
+  DARK_OAK_LOG(1, "LOG_2"),
   DARK_OAK_PLANKS(5, "WOOD"),
   DARK_OAK_PRESSURE_PLATE("WOOD_PLATE"),
   DARK_OAK_SAPLING(5, "SAPLING"),
@@ -361,7 +354,7 @@ public enum XMaterial {
   DARK_OAK_STAIRS,
   DARK_OAK_TRAPDOOR("TRAP_DOOR"),
   DARK_OAK_WALL_SIGN("WALL_SIGN"),
-  DARK_OAK_WOOD(1, "LOG", "LOG_2"),
+  DARK_OAK_WOOD(1, "LOG_2"),
   DARK_PRISMARINE(1, "PRISMARINE"),
   DARK_PRISMARINE_SLAB(13),
   DARK_PRISMARINE_STAIRS(13),
@@ -716,7 +709,7 @@ public enum XMaterial {
   MOSSY_STONE_BRICK_SLAB(5, "STEP"),
   MOSSY_STONE_BRICK_STAIRS("SMOOTH_STAIRS"),
   MOSSY_STONE_BRICK_WALL,
-  MOVING_PISTON("PISTON_BASE", "PISTON_MOVING_PIECE"),
+  MOVING_PISTON("PISTON_MOVING_PIECE"),
   MULE_SPAWN_EGG(32, "MONSTER_EGG"),
   MUSHROOM_STEM("BROWN_MUSHROOM"),
   MUSHROOM_STEW("MUSHROOM_SOUP"),
@@ -962,7 +955,7 @@ public enum XMaterial {
   /**
    * Data value 14 or 0
    */
-  RED_BED(0, "BED_BLOCK", "BED"),
+  RED_BED(14, "BED_BLOCK", "BED"),
   RED_CARPET(14, "CARPET"),
   RED_CONCRETE(14, "CONCRETE"),
   RED_CONCRETE_POWDER(14, "CONCRETE_POWDER"),
@@ -1276,7 +1269,7 @@ public enum XMaterial {
         public Pattern load(@Nonnull String str) {
           try {
             return Pattern.compile(str);
-          } catch(PatternSyntaxException ex) {
+          } catch (PatternSyntaxException ex) {
             ex.printStackTrace();
             return null;
           }
@@ -1317,11 +1310,11 @@ public enum XMaterial {
   private static final Set<String> DUPLICATED;
 
   static {
-    for(XMaterial material : VALUES) NAMES.put(material.name(), material);
+    for (XMaterial material : VALUES) NAMES.put(material.name(), material);
   }
 
   static {
-    if(Data.ISFLAT) {
+    if (Data.ISFLAT) {
       // It's not needed at all if it's the newer version. We can save some memory.
       DUPLICATED = null;
     } else {
@@ -1371,10 +1364,10 @@ public enum XMaterial {
     this.legacy = legacy;
 
     Material mat = null;
-    if((!Data.ISFLAT && this.isDuplicated()) || (mat = Material.getMaterial(this.name())) == null) {
-      for(int i = legacy.length - 1; i >= 0; i--) {
+    if ((!Data.ISFLAT && this.isDuplicated()) || (mat = Material.getMaterial(this.name())) == null) {
+      for (int i = legacy.length - 1; i >= 0; i--) {
         mat = Material.getMaterial(legacy[i]);
-        if(mat != null) break;
+        if (mat != null) break;
       }
     }
     this.material = mat;
@@ -1436,6 +1429,7 @@ public enum XMaterial {
    * without throwing an exception.
    *
    * @param name the name of the material.
+   *
    * @return an optional that can be empty.
    * @since 5.1.0
    */
@@ -1466,11 +1460,11 @@ public enum XMaterial {
   private static XMaterial requestOldXMaterial(@Nonnull String name, byte data) {
     String holder = name + data;
     XMaterial cache = NAME_CACHE.getIfPresent(holder);
-    if(cache != null) return cache;
+    if (cache != null) return cache;
 
-    for(XMaterial material : VALUES) {
+    for (XMaterial material : VALUES) {
       // Not using material.name().equals(name) check is intended.
-      if((data == UNKNOWN_DATA_VALUE || data == material.data) && material.anyMatchLegacy(name)) {
+      if ((data == UNKNOWN_DATA_VALUE || data == material.data) && material.anyMatchLegacy(name)) {
         NAME_CACHE.put(holder, material);
         return material;
       }
@@ -1506,6 +1500,7 @@ public enum XMaterial {
    * </pre>
    *
    * @param name the material string that consists of the material name, data and separator character.
+   *
    * @return the parsed XMaterial.
    * @see #matchXMaterial(String)
    * @since 3.0.0
@@ -1513,13 +1508,13 @@ public enum XMaterial {
   @Nonnull
   private static Optional<XMaterial> matchXMaterialWithData(@Nonnull String name) {
     int index = name.indexOf(':');
-    if(index != -1) {
+    if (index != -1) {
       String mat = format(name.substring(0, index));
       try {
         // We don't use Byte.parseByte because we have our own range check.
         byte data = (byte) Integer.parseInt(StringUtils.deleteWhitespace(name.substring(index + 1)));
         return data >= 0 && data < MAX_DATA_VALUE ? matchDefinedXMaterial(mat, data) : matchDefinedXMaterial(mat, UNKNOWN_DATA_VALUE);
-      } catch(NumberFormatException ignored) {
+      } catch (NumberFormatException ignored) {
         return matchDefinedXMaterial(mat, UNKNOWN_DATA_VALUE);
       }
     }
@@ -1547,6 +1542,7 @@ public enum XMaterial {
    * if not a damageable item {@link ItemStack#getDurability()}.
    *
    * @param item the ItemStack to match.
+   *
    * @return an XMaterial if matched any.
    * @throws IllegalArgumentException may be thrown as an unexpected exception.
    * @see #matchXMaterial(Material)
@@ -1572,6 +1568,7 @@ public enum XMaterial {
    *
    * @param name the formatted name of the material.
    * @param data the data value of the material. Is always 0 or {@link #UNKNOWN_DATA_VALUE} when {@link Data#ISFLAT}
+   *
    * @return an XMaterial (with the same data value if specified)
    * @see #matchXMaterial(Material)
    * @see #matchXMaterial(int, byte)
@@ -1582,22 +1579,22 @@ public enum XMaterial {
   protected static Optional<XMaterial> matchDefinedXMaterial(@Nonnull String name, byte data) {
     // if (!Boolean.valueOf(Boolean.getBoolean(Boolean.TRUE.toString())).equals(Boolean.FALSE.booleanValue())) return null;
     Boolean duplicated = null;
+    boolean isAMap = name.equalsIgnoreCase("MAP");
 
     // Do basic number and boolean checks before accessing more complex enum stuff.
-    if(Data.ISFLAT || (data <= 0 && !(duplicated = isDuplicated(name)))) {
+    if (Data.ISFLAT || (!isAMap && data <= 0 && !(duplicated = isDuplicated(name)))) {
       Optional<XMaterial> xMaterial = getIfPresent(name);
-      if(xMaterial.isPresent()) return xMaterial;
+      if (xMaterial.isPresent()) return xMaterial;
     }
     // Usually flat versions wouldn't pass this point, but some special materials do.
 
     XMaterial oldXMaterial = requestOldXMaterial(name, data);
-    if(oldXMaterial == null) {
+    if (oldXMaterial == null) {
       // Special case. Refer to FILLED_MAP for more info.
-      return data > 0 && name.endsWith("MAP") ? Optional.of(FILLED_MAP) : Optional.empty();
+      return (data >= 0 && isAMap) ? Optional.of(FILLED_MAP) : Optional.empty();
     }
 
-    if(!Data.ISFLAT && oldXMaterial.isPlural() && (duplicated == null ? isDuplicated(name) : duplicated))
-      return getIfPresent(name);
+    if (!Data.ISFLAT && oldXMaterial.isPlural() && (duplicated == null ? isDuplicated(name) : duplicated)) return getIfPresent(name);
     return Optional.of(oldXMaterial);
   }
 
@@ -1609,6 +1606,7 @@ public enum XMaterial {
    * <p>{@code MELON, CARROT, POTATO, BEETROOT -> true}
    *
    * @param name the name of the material to check.
+   *
    * @return true if there's a duplicated material for this material, otherwise false.
    * @since 2.0.0
    */
@@ -1623,6 +1621,7 @@ public enum XMaterial {
    *
    * @param id   the ID (Magic value) of the material.
    * @param data the data value of the material.
+   *
    * @return a parsed XMaterial with the same ID and data value.
    * @see #matchXMaterial(ItemStack)
    * @since 2.0.0
@@ -1633,9 +1632,9 @@ public enum XMaterial {
   @Nonnull
   @Deprecated
   public static Optional<XMaterial> matchXMaterial(int id, byte data) {
-    if(id < 0 || id > MAX_ID || data < 0) return Optional.empty();
-    for(XMaterial materials : VALUES) {
-      if(materials.data == data && materials.getId() == id) return Optional.of(materials);
+    if (id < 0 || id > MAX_ID || data < 0) return Optional.empty();
+    for (XMaterial materials : VALUES) {
+      if (materials.data == data && materials.getId() == id) return Optional.of(materials);
     }
     return Optional.empty();
   }
@@ -1647,6 +1646,7 @@ public enum XMaterial {
    * the normal RegEx + String Methods approach for both formatted and unformatted material names.
    *
    * @param name the material name to modify.
+   *
    * @return an enum name.
    * @since 2.0.0
    */
@@ -1657,21 +1657,21 @@ public enum XMaterial {
     int count = 0;
     boolean appendUnderline = false;
 
-    for(int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
       char ch = name.charAt(i);
 
-      if(!appendUnderline && count != 0 && (ch == '-' || ch == ' ' || ch == '_') && chs[count] != '_')
+      if (!appendUnderline && count != 0 && (ch == '-' || ch == ' ' || ch == '_') && chs[count] != '_')
         appendUnderline = true;
       else {
         boolean number = false;
         // Old materials have numbers in them.
-        if((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (number = (ch >= '0' && ch <= '9'))) {
-          if(appendUnderline) {
+        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (number = (ch >= '0' && ch <= '9'))) {
+          if (appendUnderline) {
             chs[count++] = '_';
             appendUnderline = false;
           }
 
-          if(number) chs[count++] = ch;
+          if (number) chs[count++] = ch;
           else chs[count++] = (char) (ch & 0x5f);
         }
       }
@@ -1684,6 +1684,7 @@ public enum XMaterial {
    * Checks if the specified version is the same version or higher than the current server version.
    *
    * @param version the major version to be checked. "1." is ignored. E.g. 1.12 = 12 | 1.9 = 9
+   *
    * @return true of the version is equal or higher than the current version.
    * @since 2.0.0
    */
@@ -1696,6 +1697,7 @@ public enum XMaterial {
    * In most cases, you shouldn't be using this method.
    *
    * @param version Supports {@link Bukkit#getVersion()}, {@link Bukkit#getBukkitVersion()} and normal formats such as "1.14"
+   *
    * @return the exact major version.
    * @see #supports(int)
    * @see #getVersion()
@@ -1708,9 +1710,9 @@ public enum XMaterial {
 
     // getVersion()
     int index = version.lastIndexOf("MC:");
-    if(index != -1) {
+    if (index != -1) {
       version = version.substring(index + 4, version.length() - 1);
-    } else if(version.endsWith("SNAPSHOT")) {
+    } else if (version.endsWith("SNAPSHOT")) {
       // getBukkitVersion()
       index = version.indexOf('-');
       version = version.substring(0, index);
@@ -1718,7 +1720,7 @@ public enum XMaterial {
 
     // 1.13.2, 1.14.4, etc...
     int lastDot = version.lastIndexOf('.');
-    if(version.indexOf('.') != lastDot) version = version.substring(0, lastDot);
+    if (version.indexOf('.') != lastDot) version = version.substring(0, lastDot);
 
     return version;
   }
@@ -1782,30 +1784,31 @@ public enum XMaterial {
    * Want to learn RegEx? You can mess around in <a href="https://regexr.com/">RegExr</a> website.
    *
    * @param materials the material names to check base material on.
+   *
    * @return true if one of the given material names is similar to the base material.
    * @since 3.1.1
    */
   public boolean isOneOf(@Nullable Collection<String> materials) {
-    if(materials == null || materials.isEmpty()) return false;
+    if (materials == null || materials.isEmpty()) return false;
     String name = this.name();
 
-    for(String comp : materials) {
+    for (String comp : materials) {
       String checker = comp.toUpperCase(Locale.ENGLISH);
-      if(checker.startsWith("CONTAINS:")) {
+      if (checker.startsWith("CONTAINS:")) {
         comp = format(checker.substring(9));
-        if(name.contains(comp)) return true;
+        if (name.contains(comp)) return true;
         continue;
       }
-      if(checker.startsWith("REGEX:")) {
+      if (checker.startsWith("REGEX:")) {
         comp = comp.substring(6);
         Pattern pattern = CACHED_REGEX.getUnchecked(comp);
-        if(pattern != null && pattern.matcher(name).matches()) return true;
+        if (pattern != null && pattern.matcher(name).matches()) return true;
         continue;
       }
 
       // Direct Object Equals
       Optional<XMaterial> xMat = matchXMaterial(comp);
-      if(xMat.isPresent() && xMat.get() == this) return true;
+      if (xMat.isPresent() && xMat.get() == this) return true;
     }
     return false;
   }
@@ -1817,6 +1820,7 @@ public enum XMaterial {
    * Use {@link #parseItem()} instead when creating new ItemStacks.
    *
    * @param item the item to change its type.
+   *
    * @see #parseItem()
    * @since 3.0.0
    */
@@ -1828,7 +1832,7 @@ public enum XMaterial {
     Objects.requireNonNull(material, () -> "Unsupported material: " + this.name());
 
     item.setType(material);
-    if(!Data.ISFLAT && material.getMaxDurability() <= 0) item.setDurability(this.data);
+    if (!Data.ISFLAT && material.getMaxDurability() <= 0) item.setDurability(this.data);
     return item;
   }
 
@@ -1837,12 +1841,13 @@ public enum XMaterial {
    * All the values passed to this method will not be null or empty and are formatted correctly.
    *
    * @param name the material name to check.
+   *
    * @return true if it's one of the legacy names, otherwise false.
    * @since 2.0.0
    */
   private boolean anyMatchLegacy(@Nonnull String name) {
-    for(int i = this.legacy.length - 1; i >= 0; i--) {
-      if(name.equals(this.legacy[i])) return true;
+    for (int i = this.legacy.length - 1; i >= 0; i--) {
+      if (name.equals(this.legacy[i])) return true;
     }
     return false;
   }
@@ -1877,10 +1882,10 @@ public enum XMaterial {
    */
   @SuppressWarnings("deprecation")
   public int getId() {
-    if(this.data != 0 || this.version >= 13) return -1;
+    if (this.data != 0 || this.version >= 13) return -1;
     Material material = this.parseMaterial();
-    if(material == null) return -1;
-    if(Data.ISFLAT && !material.isLegacy()) return -1;
+    if (material == null) return -1;
+    if (Data.ISFLAT && !material.isLegacy()) return -1;
     return material.getId();
   }
 
@@ -1910,7 +1915,7 @@ public enum XMaterial {
   @SuppressWarnings("deprecation")
   public ItemStack parseItem() {
     Material material = this.parseMaterial();
-    if(material == null) return null;
+    if (material == null) return null;
     return Data.ISFLAT ? new ItemStack(material) : new ItemStack(material, 1, this.data);
   }
 
@@ -1929,13 +1934,14 @@ public enum XMaterial {
    * Checks if an item has the same material (and data value on older versions).
    *
    * @param item item to check.
+   *
    * @return true if the material is the same as the item's material (and data value if on older versions), otherwise false.
    * @since 1.0.0
    */
   @SuppressWarnings("deprecation")
   public boolean isSimilar(@Nonnull ItemStack item) {
     Objects.requireNonNull(item, "Cannot compare with null ItemStack");
-    if(item.getType() != this.parseMaterial()) return false;
+    if (item.getType() != this.parseMaterial()) return false;
     return Data.ISFLAT || item.getDurability() == this.data || item.getType().getMaxDurability() <= 0;
   }
 
@@ -1975,7 +1981,7 @@ public enum XMaterial {
    * and is only used for parsing materials, not matching, for matching check {@link #DUPLICATED}
    */
   private boolean isDuplicated() {
-    switch(this.name()) {
+    switch (this.name()) {
       case "MELON":
       case "CARROT":
       case "POTATO":
