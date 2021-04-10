@@ -9,11 +9,17 @@ import org.bukkit.entity.Player;
  */
 public class PacketUtils {
 
+  private static Class<?> packetClass;
+
+  static {
+    packetClass = getNMSClass("Packet");
+  }
+
   public static void sendPacket(Player player, Object packet) {
     try {
       Object handle = player.getClass().getMethod("getHandle").invoke(player);
       Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
-      playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+      playerConnection.getClass().getMethod("sendPacket", packetClass).invoke(playerConnection, packet);
     } catch (ReflectiveOperationException ex) {
       ex.printStackTrace();
     }

@@ -60,15 +60,15 @@ public class LocationSerializer {
     if (loc.length == 1) {
       throw new IllegalArgumentException("String from which location is retrieved cannot be parsed because its location is null!");
     }
+
     double x = Double.parseDouble(loc[1]);
     double y = Double.parseDouble(loc[2]);
     double z = Double.parseDouble(loc[3]);
-    if(loc.length > 4) {
-      float yaw = Float.parseFloat(loc[4]);
-      float pitch = Float.parseFloat(loc[5]);
-      return new Location(world, x, y, z, yaw, pitch);
-    }
-    return new Location(world, x, y, z);
+
+    float yaw = loc.length > 4 ? Float.parseFloat(loc[4]) : 0f;
+    float pitch = loc.length > 5 ? Float.parseFloat(loc[5]) : 0f;
+
+    return new Location(world, x, y, z, yaw, pitch);
   }
 
   /**
