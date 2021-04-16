@@ -29,9 +29,9 @@ import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticleLegacy;
 import pl.plajerlair.commonsbox.minecraft.misc.MiscUtils;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +43,9 @@ import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 public class VersionUtils {
 
   private static boolean isPaper = false;
-  private static Class<?> iChatBaseComponent;
+  private static Class<?> iChatBaseComponent, packetPlayOutChatClass, chatMessageTypeClass, chatcomponentTextClass;
+  private static Constructor<?> packetPlayOutChatConstructor, chatComponentTextConstructor;
+  private static Object chatMessageType;
 
   static {
     try {
@@ -54,6 +56,38 @@ public class VersionUtils {
     }
 
     iChatBaseComponent = getNMSClass("IChatBaseComponent");
+    packetPlayOutChatClass = getNMSClass("PacketPlayOutChat");
+    chatMessageTypeClass = getNMSClass("ChatMessageType");
+    chatcomponentTextClass = getNMSClass("ChatComponentText");
+
+    if (chatMessageTypeClass != null) {
+      for (Object obj : chatMessageTypeClass.getEnumConstants()) {
+        if (obj.toString().equalsIgnoreCase("GAME_INFO") || obj.toString().equalsIgnoreCase("ACTION_BAR")) {
+          chatMessageType = obj;
+          break;
+        }
+      }
+    }
+
+    try {
+      if (chatcomponentTextClass != null) {
+        chatComponentTextConstructor = chatcomponentTextClass.getConstructor(String.class);
+      }
+
+      if (chatMessageTypeClass == null) {
+        packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent, byte.class);
+      } else if (chatMessageType != null) {
+        try {
+          packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
+              chatMessageTypeClass);
+        } catch (NoSuchMethodException e) {
+          packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
+              chatMessageTypeClass, UUID.class);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public static boolean isPaper() {
@@ -348,27 +382,16 @@ public class VersionUtils {
   }
 
   public static void sendActionBar(Player player, String message) {
-    if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
+    if(Version.isCurrentEqualOrLower(Version.v1_10_R1)) {
       try {
-        Constructor<?> constructor = getNMSClass("PacketPlayOutChat").getConstructor(iChatBaseComponent, byte.class);
-
-        Method jsonComponentMethod = null;
-        Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
-        if (declaredClasses.length > 0) {
-          jsonComponentMethod = declaredClasses[0].getMethod("a", String.class);
-        }
-
-        Object packet = null;
-        if (Version.isCurrentLower(Version.v1_8_R2)) {
-          Class<?> chatSerializer = getNMSClass("ChatSerializer");
-          packet = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + message + "\"}"));
-        } else if (jsonComponentMethod != null) {
-          Object icbc = jsonComponentMethod.invoke(null, "{\"text\":\"" + message + "\"}");
-          packet = constructor.newInstance(icbc, (byte) 2);
-        }
-
-        if (packet != null) {
-          sendPacket(player, packet);
+        if (chatMessageTypeClass == null) {
+          sendPacket(player, packetPlayOutChatConstructor.newInstance(chatComponentTextConstructor.newInstance(message), (byte) 2));
+        } else if (chatMessageType != null) {
+          if (packetPlayOutChatConstructor.getParameterCount() == 2) {
+            sendPacket(player, packetPlayOutChatConstructor.newInstance(chatComponentTextConstructor.newInstance(message), chatMessageType));
+          } else {
+            sendPacket(player, packetPlayOutChatConstructor.newInstance(chatComponentTextConstructor.newInstance(message), chatMessageType, player.getUniqueId()));
+          }
         }
       } catch(ReflectiveOperationException e) {
         e.printStackTrace();
