@@ -109,10 +109,13 @@ public class InventorySerializer {
     try {
       FileConfiguration invConfig = YamlConfiguration.loadConfiguration(file);
       int invSize = invConfig.getInt("Size", 36);
-      int invMaxStackSize = invConfig.getInt("Max stack size", 64);
+      if (invSize > 36 || invSize < 1) {
+        invSize = 36;
+      }
+
       InventoryHolder invHolder = invConfig.contains("Holder") ? Bukkit.getPlayer(invConfig.getString("Holder")) : null;
       Inventory inventory = Bukkit.getServer().createInventory(invHolder, InventoryType.PLAYER);
-      inventory.setMaxStackSize(invMaxStackSize);
+      inventory.setMaxStackSize(invConfig.getInt("Max stack size", 64));
       try {
         ItemStack[] invContents = new ItemStack[invSize];
         for(int i = 0; i < invSize; i++) {
