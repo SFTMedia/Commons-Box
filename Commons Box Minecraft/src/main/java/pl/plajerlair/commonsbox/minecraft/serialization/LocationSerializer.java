@@ -51,14 +51,16 @@ public class LocationSerializer {
   public static Location getLocation(String path) {
     String[] loc;
     if(path == null || (loc = path.split(",")).length == 0) {
-      throw new IllegalArgumentException("String from which location is retrieved cannot be null nor empty!");
+      return null;
     }
+
     World world = Bukkit.getServer().getWorld(loc[0]);
-    if(!Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core") && world == null) {
+    if(world == null && !Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
       world = Bukkit.createWorld(new WorldCreator(loc[0]));
     }
+
     if (loc.length == 1) {
-      throw new IllegalArgumentException("String from which location is retrieved cannot be parsed because its location is null!");
+      return null;
     }
 
     double x = Double.parseDouble(loc[1]);

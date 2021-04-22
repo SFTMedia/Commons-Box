@@ -8,6 +8,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -123,5 +124,10 @@ public final class Complement2 implements Complement {
 	@Override
 	public void kickPlayer(Player player, String message) {
 		player.kick(deserialize(message));
+	}
+
+	@Override
+	public Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
+		return Bukkit.createInventory(owner, type, deserialize(title));
 	}
 }

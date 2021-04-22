@@ -7,9 +7,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,7 +32,9 @@ public interface Complement {
 
 	void setLine(Sign sign, int line, String text);
 
-	org.bukkit.inventory.Inventory createInventory(InventoryHolder owner, int size, String title);
+	Inventory createInventory(InventoryHolder owner, int size, String title);
+
+	Inventory createInventory(InventoryHolder owner, InventoryType type, String title);
 
 	void setLore(ItemMeta meta, List<String> lore);
 
