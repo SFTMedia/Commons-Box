@@ -170,6 +170,22 @@ public class MiscUtils {
     Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] Plugin: §6" + descriptionFile.getVersion() + " §r| Server: §6" + plugin.getServer().getVersion() + " §r| Detected: §6" + ServerVersion.Version.getCurrent() + " §r| Software: §6" + plugin.getServer().getName() + " §r| Java: §6" + System.getProperty("java.version"));
     Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
     Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] This plugin was created by §6Plugily Projects §ras part of an §6open source project§r ( https://donate.plugily.xyz )");
+    if(plugin.getDescription().getVersion().contains("-debug") || plugin.getConfig().getBoolean("Debug")) {
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DEBUG] §eThe debug mode of this plugin is enabled");
+    }
+    if(plugin.getDescription().getVersion().contains("-b")) {
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][BETA] §eWe recognize that this is a beta build");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][BETA] §eAs beta already says this version is not meant for production servers!");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][BETA] §eWe are trying our best to provide you with nearly stable builds");
+    }
+    if(plugin.getDescription().getVersion().contains("-dev")) {
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DEV] §eWe recognize that this is a dev build");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DEV] §c!!!DO NOT USE THIS ON PRODUCTION!!!");
+      Bukkit.getConsoleSender().sendMessage("[" + pluginname + "][DEV] §eDev builds are just for test purposes and we do not provide any support to them!");
+    }
     if(disclaimer) {
       if(ServerVersion.Version.isCurrentEqual(Version.v0_0_R0) || ServerVersion.Version.isCurrentLower(Version.v1_12_R1)) {
         Bukkit.getConsoleSender().sendMessage("[" + pluginname + "] ");
