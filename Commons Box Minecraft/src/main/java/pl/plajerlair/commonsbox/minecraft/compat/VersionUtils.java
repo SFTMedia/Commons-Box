@@ -43,8 +43,8 @@ public class VersionUtils {
 
   private static boolean isPaper = false;
   private static Class<?> iChatBaseComponent, packetPlayOutChatClass, chatMessageTypeClass, chatcomponentTextClass;
-  private static Constructor<?> packetPlayOutChatConstructor, chatComponentTextConstructor;
-  private static Object chatMessageType;
+  private static Constructor<?> packetPlayOutChatConstructor, chatComponentTextConstructor, titleConstructor;
+  private static Object chatMessageType, titleField, subTitleField;
 
   static {
     try {
@@ -83,6 +83,14 @@ public class VersionUtils {
           packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
               chatMessageTypeClass, UUID.class);
         }
+      }
+
+      Class<?> playOutTitle = getNMSClass("PacketPlayOutTitle");
+      Class<?>[] titleDeclaredClasses = playOutTitle.getDeclaredClasses();
+      if (titleDeclaredClasses.length > 0) {
+        titleConstructor = playOutTitle.getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
+        titleField = titleDeclaredClasses[0].getField("TITLE").get(null);
+        subTitleField = titleDeclaredClasses[0].getField("SUBTITLE").get(null);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -191,7 +199,7 @@ public class VersionUtils {
 
   public static List<String> getParticleValues() {
     if(Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
-      return Stream.of(XParticle.getParticles()).map(Enum::toString).collect(Collectors.toList());
+      return Stream.of(Particle.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     return Stream.of(XParticleLegacy.values()).map(Enum::toString).collect(Collectors.toList());
@@ -234,7 +242,7 @@ public class VersionUtils {
   public static void setDurability(ItemStack item, short durability) {
     if(Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
       ItemMeta meta = item.getItemMeta();
-      if(meta != null) {
+      if(meta instanceof Damageable) {
         ((Damageable) meta).setDamage(durability);
       }
     } else {
@@ -423,9 +431,7 @@ public class VersionUtils {
           chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
         }
 
-        Class<?>[] titleDeclaredClasses = getNMSClass("PacketPlayOutTitle").getDeclaredClasses();
-        Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
-        sendPacket(player, titleConstructor.newInstance(titleDeclaredClasses[0].getField("TITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime));
+        sendPacket(player, titleConstructor.newInstance(titleField, chatTitle, fadeInTime, showTime, fadeOutTime));
       } catch(Exception ignored) {
       }
     } else {
@@ -445,9 +451,7 @@ public class VersionUtils {
           chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
         }
 
-        Class<?>[] titleDeclaredClasses = getNMSClass("PacketPlayOutTitle").getDeclaredClasses();
-        Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
-        sendPacket(player, titleConstructor.newInstance(titleDeclaredClasses[0].getField("SUBTITLE").get(null), chatTitle, fadeInTime, showTime, fadeOutTime));
+        sendPacket(player, titleConstructor.newInstance(subTitleField, chatTitle, fadeInTime, showTime, fadeOutTime));
       } catch(Exception ignored) {
       }
     } else {

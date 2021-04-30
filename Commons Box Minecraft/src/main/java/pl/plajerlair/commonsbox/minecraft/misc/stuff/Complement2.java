@@ -18,12 +18,12 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public final class Complement2 implements Complement {
 
 	private String serialize(Component component) {
-		return PlainComponentSerializer.plain().serialize(component);
+		return LegacyComponentSerializer.legacyAmpersand().serialize(component);
 	}
 
 	private Component deserialize(String t) {
