@@ -22,7 +22,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
 import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion.Version;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticle;
 import pl.plajerlair.commonsbox.minecraft.compat.xseries.XParticleLegacy;
@@ -59,9 +58,9 @@ public class VersionUtils {
     chatMessageTypeClass = getNMSClass("ChatMessageType");
     chatcomponentTextClass = getNMSClass("ChatComponentText");
 
-    if (chatMessageTypeClass != null) {
-      for (Object obj : chatMessageTypeClass.getEnumConstants()) {
-        if (obj.toString().equalsIgnoreCase("GAME_INFO") || obj.toString().equalsIgnoreCase("ACTION_BAR")) {
+    if(chatMessageTypeClass != null) {
+      for(Object obj : chatMessageTypeClass.getEnumConstants()) {
+        if(obj.toString().equalsIgnoreCase("GAME_INFO") || obj.toString().equalsIgnoreCase("ACTION_BAR")) {
           chatMessageType = obj;
           break;
         }
@@ -69,17 +68,17 @@ public class VersionUtils {
     }
 
     try {
-      if (chatcomponentTextClass != null) {
+      if(chatcomponentTextClass != null) {
         chatComponentTextConstructor = chatcomponentTextClass.getConstructor(String.class);
       }
 
-      if (chatMessageTypeClass == null) {
+      if(chatMessageTypeClass == null) {
         packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent, byte.class);
-      } else if (chatMessageType != null) {
+      } else if(chatMessageType != null) {
         try {
           packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
               chatMessageTypeClass);
-        } catch (NoSuchMethodException e) {
+        } catch(NoSuchMethodException e) {
           packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
               chatMessageTypeClass, UUID.class);
         }
@@ -87,12 +86,12 @@ public class VersionUtils {
 
       Class<?> playOutTitle = getNMSClass("PacketPlayOutTitle");
       Class<?>[] titleDeclaredClasses = playOutTitle.getDeclaredClasses();
-      if (titleDeclaredClasses.length > 0) {
+      if(titleDeclaredClasses.length > 0) {
         titleConstructor = playOutTitle.getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
         titleField = titleDeclaredClasses[0].getField("TITLE").get(null);
         subTitleField = titleDeclaredClasses[0].getField("SUBTITLE").get(null);
       }
-    } catch (Exception e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
   }
@@ -108,8 +107,8 @@ public class VersionUtils {
   public static SkullMeta setPlayerHead(Player player, SkullMeta meta) {
     if(ServerVersion.Version.isCurrentLower(ServerVersion.Version.v1_12_R1)) {
       meta.setOwner(player.getName());
-    } else if (isPaper) {
-      if (player.getPlayerProfile().hasTextures()) {
+    } else if(isPaper) {
+      if(player.getPlayerProfile().hasTextures()) {
         meta.setPlayerProfile(player.getPlayerProfile());
       }
     } else {
@@ -368,6 +367,9 @@ public class VersionUtils {
   }
 
   public static void setItemInHand(LivingEntity entity, ItemStack stack) {
+    if(entity.getEquipment() == null) {
+      return;
+    }
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       entity.getEquipment().setItemInHand(stack);
       return;
@@ -376,6 +378,9 @@ public class VersionUtils {
   }
 
   public static void setItemInHandDropChance(LivingEntity entity, float chance) {
+    if(entity.getEquipment() == null) {
+      return;
+    }
     if(Version.isCurrentEqualOrLower(Version.v1_8_R3)) {
       entity.getEquipment().setItemInHandDropChance(chance);
       return;
@@ -386,10 +391,10 @@ public class VersionUtils {
   public static void sendActionBar(Player player, String message) {
     if(Version.isCurrentEqualOrLower(Version.v1_10_R1)) {
       try {
-        if (chatMessageTypeClass == null) {
+        if(chatMessageTypeClass == null) {
           sendPacket(player, packetPlayOutChatConstructor.newInstance(chatComponentTextConstructor.newInstance(message), (byte) 2));
-        } else if (chatMessageType != null) {
-          if (packetPlayOutChatConstructor.getParameterCount() == 2) {
+        } else if(chatMessageType != null) {
+          if(packetPlayOutChatConstructor.getParameterCount() == 2) {
             sendPacket(player, packetPlayOutChatConstructor.newInstance(chatComponentTextConstructor.newInstance(message), chatMessageType));
           } else {
             sendPacket(player, packetPlayOutChatConstructor.newInstance(chatComponentTextConstructor.newInstance(message), chatMessageType, player.getUniqueId()));
@@ -407,6 +412,9 @@ public class VersionUtils {
 
   public static void sendTitles(Player player, String title, String subtitle, int fadeInTime, int showTime,
                                 int fadeOutTime) {
+    if(title == null && subtitle == null) {
+      return;
+    }
     //avoid null on title
     if(title == null) {
       title = "";
@@ -424,9 +432,9 @@ public class VersionUtils {
       try {
         Object chatTitle = null;
         Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
-        if (declaredClasses.length > 0) {
+        if(declaredClasses.length > 0) {
           chatTitle = declaredClasses[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
-        } else if (Version.isCurrentLower(Version.v1_8_R2)) {
+        } else if(Version.isCurrentLower(Version.v1_8_R2)) {
           Class<?> chatSerializer = getNMSClass("ChatSerializer");
           chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
         }
@@ -444,9 +452,9 @@ public class VersionUtils {
       try {
         Object chatTitle = null;
         Class<?>[] declaredClasses = iChatBaseComponent.getDeclaredClasses();
-        if (declaredClasses.length > 0) {
+        if(declaredClasses.length > 0) {
           chatTitle = declaredClasses[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
-        } else if (Version.isCurrentLower(Version.v1_8_R2)) {
+        } else if(Version.isCurrentLower(Version.v1_8_R2)) {
           Class<?> chatSerializer = getNMSClass("ChatSerializer");
           chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
         }
