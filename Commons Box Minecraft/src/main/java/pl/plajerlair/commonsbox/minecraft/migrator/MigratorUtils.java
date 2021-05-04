@@ -1,6 +1,5 @@
 package pl.plajerlair.commonsbox.minecraft.migrator;
 
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -31,9 +30,9 @@ public class MigratorUtils {
    */
   public static void removeLineFromFile(File file, String lineToRemove) {
     try {
-      List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
+      List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
       List<String> updatedLines = lines.stream().filter(s -> !s.contains(lineToRemove)).collect(Collectors.toList());
-      FileUtils.writeLines(file, updatedLines, false);
+      Files.write(file.toPath(), updatedLines, StandardCharsets.UTF_8);
     } catch(IOException e) {
       e.printStackTrace();
       Bukkit.getLogger().warning("[CommonsBox] Something went horribly wrong with migration! Please contact Plugily Projects!");
