@@ -70,6 +70,7 @@ public class ColorUtil {
   }
 
   public static Color fromChatColor(ChatColor chatColor) {
-    return Color.fromRGB(colorMap.get(chatColor).getRed(), colorMap.get(chatColor).getGreen(), colorMap.get(chatColor).getBlue());
+    ColorSet set = colorMap.get(chatColor);
+    return Color.fromRGB(set.getRed(), set.getGreen(), set.getBlue());
   }
 }

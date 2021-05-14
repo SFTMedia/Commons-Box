@@ -38,20 +38,19 @@ public class InventorySerializer {
    * @return true if saved properly, false if inventory is null or couldn't save
    */
   public static boolean saveInventoryToFile(JavaPlugin plugin, Player player) {
-    String uuid = player.getUniqueId().toString();
     PlayerInventory inventory = player.getInventory();
-    File path = new File(plugin.getDataFolder() + File.separator + "inventories");
+    File path = new File(plugin.getDataFolder(), "inventories");
     if(inventory == null) {
       return false;
     }
     try {
-      File invFile = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator, uuid + ".invsave");
-      if(!path.exists()) {
-        path.mkdir();
-      }
+      path.mkdirs();
+
+      File invFile = new File(path, player.getUniqueId().toString() + ".invsave");
       if(invFile.exists()) {
         invFile.delete();
       }
+
       FileConfiguration invConfig = YamlConfiguration.loadConfiguration(invFile);
 
       invConfig.set("ExperienceProgress", player.getExp());
@@ -102,7 +101,7 @@ public class InventorySerializer {
   }
 
   private static Inventory getInventoryFromFile(JavaPlugin plugin, String uuid) {
-    File file = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + uuid + ".invsave");
+    File file = new File(plugin.getDataFolder(), "inventories" + File.separator + uuid + ".invsave");
     if(!file.exists() || file.isDirectory() || !file.getAbsolutePath().endsWith(".invsave")) {
       return Bukkit.createInventory(null, 9);
     }
@@ -149,7 +148,9 @@ public class InventorySerializer {
    * @param player load inventory of this player
    */
   public static void loadInventory(JavaPlugin plugin, Player player) {
-    File file = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + player.getUniqueId().toString() + ".invsave");
+    String stringId = player.getUniqueId().toString();
+
+    File file = new File(plugin.getDataFolder(), "inventories" + File.separator + stringId + ".invsave");
     if(!file.exists() || file.isDirectory() || !file.getAbsolutePath().endsWith(".invsave")) {
       return;
     }
@@ -174,20 +175,23 @@ public class InventorySerializer {
         player.setFoodLevel(invConfig.getInt("Food"));
         player.setSaturation(Float.parseFloat(invConfig.getString("Saturation")));
         player.setFireTicks(invConfig.getInt("Fire ticks"));
-        player.setGameMode(GameMode.valueOf(invConfig.getString("GameMode")));
+        player.setGameMode(GameMode.valueOf(invConfig.getString("GameMode", "")));
         player.setAllowFlight(invConfig.getBoolean("Allow flight"));
         List<String> activePotions = invConfig.getStringList("Active potion effects");
         for(String potion : activePotions) {
-          String[] splited = potion.split("#");
+          String[] splited = potion.split("#", 3);
           player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(splited[0]), Integer.parseInt(splited[1]), Integer.parseInt(splited[2])));
         }
       } catch(Exception ignored) {
       }
-      Inventory inventory = getInventoryFromFile(plugin, player.getUniqueId().toString());
+
+      Inventory inventory = getInventoryFromFile(plugin, stringId);
 
       for(int i = 0; i < inventory.getContents().length; i++) {
-        if(inventory.getItem(i) != null) {
-          player.getInventory().setItem(i, inventory.getItem(i));
+        ItemStack item = inventory.getItem(i);
+
+        if(item != null) {
+          player.getInventory().setItem(i, item);
         }
       }
 
