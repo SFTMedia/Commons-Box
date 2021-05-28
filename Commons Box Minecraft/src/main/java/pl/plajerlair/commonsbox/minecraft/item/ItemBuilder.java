@@ -10,7 +10,6 @@ import pl.plajerlair.commonsbox.minecraft.misc.stuff.ComplementAccessor;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Plajer
@@ -89,8 +88,14 @@ public class ItemBuilder {
             ChatColor.translateAlternateColorCodes('&', ComplementAccessor.getComplement().getDisplayName(meta)));
       }
       if(meta.hasLore()) {
-        ComplementAccessor.getComplement().setLore(meta, ComplementAccessor.getComplement().getLore(meta).stream()
-            .map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+        List<String> lore = ComplementAccessor.getComplement().getLore(meta);
+        int size = lore.size();
+
+        for (int a = 0; a < size; a++) {
+          lore.set(a, ChatColor.translateAlternateColorCodes('&', lore.get(a)));
+        }
+
+        ComplementAccessor.getComplement().setLore(meta, lore);
       }
     }
     return this;
