@@ -38,7 +38,7 @@ import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.getNMSClass;
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 
 @SuppressWarnings("deprecation")
-public class VersionUtils {
+public final class VersionUtils {
 
   private static boolean isPaper = false;
   private static Class<?> iChatBaseComponent, packetPlayOutChatClass, chatMessageTypeClass, chatcomponentTextClass;
@@ -94,6 +94,9 @@ public class VersionUtils {
     } catch(Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private VersionUtils() {
   }
 
   public static boolean isPaper() {

@@ -123,8 +123,11 @@ public class Cuboid {
   }
 
   public boolean isIn(final Location loc) {
-    return loc.getWorld() == world && loc.getBlockX() >= xMin && loc.getBlockX() <= xMax && loc.getBlockY() >= yMin && loc.getBlockY() <= yMax && loc
-        .getBlockZ() >= zMin && loc.getBlockZ() <= zMax;
+    int blockX = loc.getBlockX();
+    int blockY = loc.getBlockY();
+    int blockZ = loc.getBlockZ();
+
+    return loc.getWorld() == world && blockX >= xMin && blockX <= xMax && blockY >= yMin && blockY <= yMax && blockZ >= zMin && blockZ <= zMax;
   }
 
   public boolean isIn(final Player player) {

@@ -20,10 +20,14 @@ public class ScriptEngine {
   }
 
   public void setValue(String value, Object valueObject) {
-    scriptEngine.put(value, valueObject);
+    if (scriptEngine != null)
+      scriptEngine.put(value, valueObject);
   }
 
   public void execute(String executable) {
+    if (scriptEngine == null)
+      return;
+
     try {
       scriptEngine.eval(executable);
     } catch(ScriptException e) {

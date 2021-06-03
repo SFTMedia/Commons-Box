@@ -33,23 +33,17 @@ public class ServerVersion {
     v1_18_R1,
     v1_18_R2;
 
-    private final Integer value;
-    private final String shortVersion;
+    private final int value;
 
     private static String[] packageVersion;
     private static Version current;
 
     Version() {
       value = Integer.valueOf(name().replaceAll("[^\\d.]", ""));
-      shortVersion = name().substring(0, name().length() - 3);
     }
 
-    public Integer getValue() {
+    public int getValue() {
       return value;
-    }
-
-    public String getShortVersion() {
-      return shortVersion;
     }
 
     public static String[] getPackageVersion() {
@@ -81,23 +75,23 @@ public class ServerVersion {
     }
 
     public boolean isLower(Version version) {
-      return getValue() < version.getValue();
+      return value < version.getValue();
     }
 
     public boolean isHigher(Version version) {
-      return getValue() > version.getValue();
+      return value > version.getValue();
     }
 
     public boolean isEqual(Version version) {
-      return getValue().equals(version.getValue());
+      return value == version.getValue();
     }
 
     public boolean isEqualOrLower(Version version) {
-      return getValue() <= version.getValue();
+      return value <= version.getValue();
     }
 
     public boolean isEqualOrHigher(Version version) {
-      return getValue() >= version.getValue();
+      return value >= version.getValue();
     }
 
     public static boolean isCurrentEqualOrHigher(Version v) {
@@ -117,7 +111,7 @@ public class ServerVersion {
     }
 
     public static boolean isCurrentEqual(Version v) {
-      return getCurrent().getValue().equals(v.getValue());
+      return getCurrent().getValue() == v.getValue();
     }
   }
 }
