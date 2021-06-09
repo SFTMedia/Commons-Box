@@ -10,8 +10,9 @@ public final class ComplementAccessor {
 		boolean kyoriSupported = false;
 		try {
 			Class.forName("net.kyori.adventure.text.Component");
+			org.bukkit.inventory.InventoryView.class.getDeclaredMethod("title");
 			kyoriSupported = true;
-		} catch (ClassNotFoundException e) {
+		} catch (NoSuchMethodException | ClassNotFoundException e) {
 		}
 
 		complement = (ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_16_R3) && kyoriSupported)
