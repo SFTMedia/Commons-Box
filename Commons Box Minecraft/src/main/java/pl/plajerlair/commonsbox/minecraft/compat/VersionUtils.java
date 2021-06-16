@@ -193,7 +193,13 @@ public final class VersionUtils {
 
     if(Version.isCurrentEqualOrHigher(Version.v1_13_R2) && (particle == Particle.LEGACY_BLOCK_CRACK
         || particle == Particle.LEGACY_BLOCK_DUST || particle == Particle.LEGACY_FALLING_DUST)) {
-      return location.getBlock().getType().createBlockData();
+      org.bukkit.Material type = location.getBlock().getType();
+
+      try {
+        return type.getData().getDeclaredConstructor().newInstance(type);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
     return null;
