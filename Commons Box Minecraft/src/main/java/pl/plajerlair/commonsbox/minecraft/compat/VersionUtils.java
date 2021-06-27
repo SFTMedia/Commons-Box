@@ -34,7 +34,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.getNMSClass;
+import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.classByName;
 import static pl.plajerlair.commonsbox.minecraft.compat.PacketUtils.sendPacket;
 
 @SuppressWarnings("deprecation")
@@ -53,10 +53,10 @@ public final class VersionUtils {
       isPaper = false;
     }
 
-    iChatBaseComponent = getNMSClass("IChatBaseComponent");
-    packetPlayOutChatClass = getNMSClass("PacketPlayOutChat");
-    chatMessageTypeClass = getNMSClass("ChatMessageType");
-    chatcomponentTextClass = getNMSClass("ChatComponentText");
+    iChatBaseComponent = classByName("net.minecraft.network.chat", "IChatBaseComponent");
+    packetPlayOutChatClass = classByName("net.minecraft.network.protocol.game", "PacketPlayOutChat");
+    chatMessageTypeClass = classByName("net.minecraft.network.chat", "ChatMessageType");
+    chatcomponentTextClass = classByName("net.minecraft.network.chat", "ChatComponentText");
 
     if(chatMessageTypeClass != null) {
       for(Object obj : chatMessageTypeClass.getEnumConstants()) {
@@ -84,7 +84,7 @@ public final class VersionUtils {
         }
       }
 
-      Class<?> playOutTitle = getNMSClass("PacketPlayOutTitle");
+      Class<?> playOutTitle = classByName("net.minecraft.network.protocol.game", "PacketPlayOutTitle");
       Class<?>[] titleDeclaredClasses = playOutTitle.getDeclaredClasses();
       if(titleDeclaredClasses.length > 0) {
         titleConstructor = playOutTitle.getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
@@ -444,7 +444,7 @@ public final class VersionUtils {
         if(declaredClasses.length > 0) {
           chatTitle = declaredClasses[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
         } else if(Version.isCurrentLower(Version.v1_8_R2)) {
-          Class<?> chatSerializer = getNMSClass("ChatSerializer");
+          Class<?> chatSerializer = classByName(null, "ChatSerializer");
           chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
         }
 
@@ -464,7 +464,7 @@ public final class VersionUtils {
         if(declaredClasses.length > 0) {
           chatTitle = declaredClasses[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
         } else if(Version.isCurrentLower(Version.v1_8_R2)) {
-          Class<?> chatSerializer = getNMSClass("ChatSerializer");
+          Class<?> chatSerializer = classByName(null, "ChatSerializer");
           chatTitle = iChatBaseComponent.cast(chatSerializer.getMethod("a", String.class).invoke(chatSerializer, "{\"text\":\"" + text + "\"}"));
         }
 
