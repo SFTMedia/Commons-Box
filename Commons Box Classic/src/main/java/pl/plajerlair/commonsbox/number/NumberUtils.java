@@ -2,6 +2,7 @@ package pl.plajerlair.commonsbox.number;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Optional;
 
 /**
  * @author Plajer
@@ -10,6 +11,23 @@ import java.math.RoundingMode;
  */
 public class NumberUtils {
 
+  public static Optional<Integer> parseInt(String s) {
+    try {
+      return Optional.of(Integer.parseInt(s));
+    } catch(NumberFormatException ex) {
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<Double> parseDouble(String s) {
+    try {
+      return Optional.of(Double.parseDouble(s));
+    } catch(NumberFormatException ex) {
+      return Optional.empty();
+    }
+  }
+
+  @Deprecated
   public static boolean isInteger(String s) {
     try {
       Integer.parseInt(s);
@@ -19,6 +37,7 @@ public class NumberUtils {
     }
   }
 
+  @Deprecated
   public static boolean isDouble(String s) {
     try {
       Double.parseDouble(s);

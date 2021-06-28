@@ -44,26 +44,14 @@ public class ColorUtil {
       this.green = green;
       this.blue = blue;
     }
-
-    public int getRed() {
-      return red;
-    }
-
-    public int getGreen() {
-      return green;
-    }
-
-    public int getBlue() {
-      return blue;
-    }
   }
 
   public static ChatColor fromRGB(int r, int g, int b) {
     TreeMap<Integer, ChatColor> closest = new TreeMap<>();
     colorMap.forEach((color, set) -> {
-      int red = Math.abs(r - set.getRed());
-      int green = Math.abs(g - set.getGreen());
-      int blue = Math.abs(b - set.getBlue());
+      int red = Math.abs(r - set.red);
+      int green = Math.abs(g - set.green);
+      int blue = Math.abs(b - set.blue);
       closest.put(red + green + blue, color);
     });
     return closest.firstEntry().getValue();
@@ -71,6 +59,6 @@ public class ColorUtil {
 
   public static Color fromChatColor(ChatColor chatColor) {
     ColorSet set = colorMap.get(chatColor);
-    return Color.fromRGB(set.getRed(), set.getGreen(), set.getBlue());
+    return Color.fromRGB(set.red, set.green, set.blue);
   }
 }
