@@ -84,12 +84,15 @@ public final class VersionUtils {
         }
       }
 
-      Class<?> playOutTitle = classByName("net.minecraft.network.protocol.game", "PacketPlayOutTitle");
-      Class<?>[] titleDeclaredClasses = playOutTitle.getDeclaredClasses();
-      if(titleDeclaredClasses.length > 0) {
-        titleConstructor = playOutTitle.getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
-        titleField = titleDeclaredClasses[0].getField("TITLE").get(null);
-        subTitleField = titleDeclaredClasses[0].getField("SUBTITLE").get(null);
+      if(Version.isCurrentEqualOrLower(Version.v1_10_R2)) {
+        Class<?> playOutTitle = classByName("net.minecraft.network.protocol.game", "PacketPlayOutTitle");
+        Class<?>[] titleDeclaredClasses = playOutTitle.getDeclaredClasses();
+
+        if(titleDeclaredClasses.length > 0) {
+          titleConstructor = playOutTitle.getConstructor(titleDeclaredClasses[0], iChatBaseComponent, int.class, int.class, int.class);
+          titleField = titleDeclaredClasses[0].getField("TITLE").get(null);
+          subTitleField = titleDeclaredClasses[0].getField("SUBTITLE").get(null);
+        }
       }
     } catch(Exception e) {
       e.printStackTrace();
