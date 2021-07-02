@@ -14,6 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import pl.plajerlair.commonsbox.minecraft.compat.ServerVersion;
 import pl.plajerlair.commonsbox.minecraft.compat.VersionUtils;
 
 import java.io.File;
@@ -82,6 +83,10 @@ public class InventorySerializer {
         }
       }
 
+      if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
+        invConfig.set("Offhand", inventory.getItemInOffHand());
+      }
+
       ItemStack[] armorContents = inventory.getArmorContents();
       for(int b = 0; b < armorContents.length; b++) {
         ItemStack itemStack = armorContents[b];
@@ -108,7 +113,7 @@ public class InventorySerializer {
     try {
       FileConfiguration invConfig = YamlConfiguration.loadConfiguration(file);
       int invSize = invConfig.getInt("Size", 36);
-      if (invSize > 36 || invSize < 1) {
+      if(invSize > 36 || invSize < 1) {
         invSize = 36;
       }
 
@@ -166,6 +171,10 @@ public class InventorySerializer {
           }
         }
         player.getInventory().setArmorContents(armor);
+        if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
+          ItemStack stack = invConfig.getItemStack("Offhand", new ItemStack(Material.AIR));
+          player.getInventory().setItemInOffHand(stack);
+        }
         VersionUtils.setMaxHealth(player, invConfig.getDouble("Max health"));
         player.setExp(0);
         player.setLevel(0);
