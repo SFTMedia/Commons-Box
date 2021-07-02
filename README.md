@@ -18,7 +18,7 @@ Then add the dependency, select one of 3 modules: classic, minecraft, database
 ```xml
     <dependencies>
             <dependency>
-            <groupId>pl.plajer</groupId>
+            <groupId>plugily.projects</groupId>
             <artifactId>commons-box(-classic/-minecraft/-database)</artifactId>
             <version>1.1.1</version>
             <scope>compile</scope>
