@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 public final class VersionUtils {
 
   private static boolean isPaper = false;
-  private static Class<?> iChatBaseComponent, packetPlayOutChatClass, chatMessageTypeClass, chatcomponentTextClass;
+  private static Class<?> iChatBaseComponent, chatMessageTypeClass;
   private static Constructor<?> packetPlayOutChatConstructor, chatComponentTextConstructor, titleConstructor;
   private static Object chatMessageType, titleField, subTitleField;
 
@@ -50,9 +50,7 @@ public final class VersionUtils {
     }
 
     iChatBaseComponent = PacketUtils.classByName("net.minecraft.network.chat", "IChatBaseComponent");
-    packetPlayOutChatClass = PacketUtils.classByName("net.minecraft.network.protocol.game", "PacketPlayOutChat");
     chatMessageTypeClass = PacketUtils.classByName("net.minecraft.network.chat", "ChatMessageType");
-    chatcomponentTextClass = PacketUtils.classByName("net.minecraft.network.chat", "ChatComponentText");
 
     if(chatMessageTypeClass != null) {
       for(Object obj : chatMessageTypeClass.getEnumConstants()) {
@@ -64,19 +62,25 @@ public final class VersionUtils {
     }
 
     try {
+      Class<?> chatcomponentTextClass = PacketUtils.classByName("net.minecraft.network.chat", "ChatComponentText");
+
       if(chatcomponentTextClass != null) {
         chatComponentTextConstructor = chatcomponentTextClass.getConstructor(String.class);
       }
 
-      if(chatMessageTypeClass == null) {
-        packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent, byte.class);
-      } else if(chatMessageType != null) {
-        try {
-          packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
-              chatMessageTypeClass);
-        } catch(NoSuchMethodException e) {
-          packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
-              chatMessageTypeClass, UUID.class);
+      Class<?> packetPlayOutChatClass = PacketUtils.classByName("net.minecraft.network.protocol.game", "PacketPlayOutChat");
+
+      if (packetPlayOutChatClass != null) {
+        if(chatMessageTypeClass == null) {
+          packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent, byte.class);
+        } else if(chatMessageType != null) {
+          try {
+            packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
+                chatMessageTypeClass);
+          } catch(NoSuchMethodException e) {
+            packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent,
+                chatMessageTypeClass, UUID.class);
+          }
         }
       }
 
