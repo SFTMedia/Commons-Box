@@ -1,3 +1,6 @@
+### 1.3.3 Release (15.07.2021)
+* Fully implemented XSeries into Commonsbox
+
 ### 1.3.2 Release (09.07.2021)
 * Fixed problems with VersionUtils
 
