@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 import plugily.projects.commonsbox.minecraft.compat.events.api.CBEntityPickupItemEvent;
 import plugily.projects.commonsbox.minecraft.compat.events.api.CBInventoryClickEvent;
@@ -49,7 +50,7 @@ public class LegacyEvents implements Listener {
 
   @EventHandler
   public void onPlayerInteractEvent(PlayerInteractEvent event) {
-    CBPlayerInteractEvent cbEvent = new CBPlayerInteractEvent(event.getPlayer(), event.getItem(), null, event.getAction(), event.getBlockFace(), event.getClickedBlock(), event.getMaterial(),  event.hasItem(), event.hasBlock());
+    CBPlayerInteractEvent cbEvent = new CBPlayerInteractEvent(event.getPlayer(), event.getItem(), EquipmentSlot.HAND, event.getAction(), event.getBlockFace(), event.getClickedBlock(), event.getMaterial(),  event.hasItem(), event.hasBlock());
     Bukkit.getPluginManager().callEvent(cbEvent);
     if(cbEvent.isCancelled()) {
       event.setCancelled(true);
@@ -58,7 +59,7 @@ public class LegacyEvents implements Listener {
 
   @EventHandler
   public void onPlayerInteractEvent(PlayerInteractEntityEvent event) {
-    CBPlayerInteractEntityEvent cbEvent = new CBPlayerInteractEntityEvent(event.getPlayer(), null, event.getRightClicked());
+    CBPlayerInteractEntityEvent cbEvent = new CBPlayerInteractEntityEvent(event.getPlayer(), EquipmentSlot.HAND, event.getRightClicked());
     Bukkit.getPluginManager().callEvent(cbEvent);
     if(cbEvent.isCancelled()) {
       event.setCancelled(true);
