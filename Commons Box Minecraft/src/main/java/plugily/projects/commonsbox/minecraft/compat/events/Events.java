@@ -51,11 +51,16 @@ public class Events implements Listener {
     }
   }
 
+  private java.lang.reflect.Method getArrowMethod;
+
   @EventHandler
   public void onPlayerPickupArrow(PlayerPickupArrowEvent event) {
     CBPlayerPickupArrow cbEvent;
     try {
-      Projectile projectile = (Projectile) event.getClass().getDeclaredMethod("getArrow").invoke(event);
+      if (getArrowMethod == null)
+        getArrowMethod = event.getClass().getDeclaredMethod("getArrow");
+
+      Projectile projectile = (Projectile) getArrowMethod.invoke(event);
       cbEvent = new CBPlayerPickupArrow(event.getPlayer(), event.getItem(), projectile, event.getRemaining(), VersionUtils.isPaper() && event.getFlyAtPlayer());
     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
       cbEvent = new CBPlayerPickupArrow(event.getPlayer(), event.getItem(), null, event.getRemaining(), false);

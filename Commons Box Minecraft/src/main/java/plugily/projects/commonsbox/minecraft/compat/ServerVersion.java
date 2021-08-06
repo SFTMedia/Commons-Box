@@ -75,43 +75,43 @@ public class ServerVersion {
     }
 
     public boolean isLower(Version version) {
-      return value < version.getValue();
+      return value < version.value;
     }
 
     public boolean isHigher(Version version) {
-      return value > version.getValue();
+      return value > version.value;
     }
 
     public boolean isEqual(Version version) {
-      return value == version.getValue();
+      return value == version.value;
     }
 
     public boolean isEqualOrLower(Version version) {
-      return value <= version.getValue();
+      return value <= version.value;
     }
 
     public boolean isEqualOrHigher(Version version) {
-      return value >= version.getValue();
+      return value >= version.value;
     }
 
     public static boolean isCurrentEqualOrHigher(Version v) {
-      return getCurrent().getValue() >= v.getValue();
+      return getCurrent().value >= v.value;
     }
 
     public static boolean isCurrentHigher(Version v) {
-      return getCurrent().getValue() > v.getValue();
+      return getCurrent().value > v.value;
     }
 
     public static boolean isCurrentLower(Version v) {
-      return getCurrent().getValue() < v.getValue();
+      return getCurrent().value < v.value;
     }
 
     public static boolean isCurrentEqualOrLower(Version v) {
-      return getCurrent().getValue() <= v.getValue();
+      return getCurrent().value <= v.value;
     }
 
     public static boolean isCurrentEqual(Version v) {
-      return getCurrent().getValue() == v.getValue();
+      return getCurrent().value == v.value;
     }
   }
 }

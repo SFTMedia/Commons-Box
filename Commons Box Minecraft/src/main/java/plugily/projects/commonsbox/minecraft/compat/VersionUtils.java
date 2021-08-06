@@ -243,11 +243,10 @@ public final class VersionUtils {
   public static Entity getPassenger(Entity ent) {
     if(ServerVersion.Version.isCurrentLower(ServerVersion.Version.v1_13_R2)) {
       return ent.getPassenger();
-    } else if(!ent.getPassengers().isEmpty()) {
-      return ent.getPassengers().get(0);
     }
 
-    return null;
+    List<Entity> passengers = ent.getPassengers();
+    return passengers.isEmpty() ? null : passengers.get(0);
   }
 
   public static void setDurability(ItemStack item, short durability) {
