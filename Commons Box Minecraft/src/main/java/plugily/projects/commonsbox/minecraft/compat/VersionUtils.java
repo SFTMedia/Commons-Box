@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("deprecation")
 public final class VersionUtils {
 
-  private static boolean isPaper = false;
+  private static boolean isPaper = false, isParticleBuilderSupported = false;
   private static Class<?> iChatBaseComponent, chatMessageTypeClass;
   private static Constructor<?> packetPlayOutChatConstructor, chatComponentTextConstructor, titleConstructor;
   private static Object chatMessageType, titleField, subTitleField;
@@ -59,6 +59,12 @@ public final class VersionUtils {
           break;
         }
       }
+    }
+
+    try {
+      Particle.class.getMethod("builder");
+      isParticleBuilderSupported = true;
+    } catch (NoSuchMethodException e) {
     }
 
     try {
@@ -128,7 +134,7 @@ public final class VersionUtils {
       Particle pa = Particle.valueOf(particle);
 
       location.getWorld().spawnParticle(pa, location, count, 0, 0, 0, 0, getParticleDataType(pa, location));
-    } else if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
+    } else if(isParticleBuilderSupported) {
       Particle p = XParticle.getParticle(particle);
       Object dataType = getParticleDataType(p, location);
 
@@ -150,7 +156,7 @@ public final class VersionUtils {
       Particle pa = Particle.valueOf(particle);
 
       location.getWorld().spawnParticle(pa, location, count, 0, 0, 0, 0, getParticleDataType(pa, location));
-    } else if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
+    } else if(isParticleBuilderSupported) {
       Particle p = XParticle.getParticle(particle);
       Object dataType = getParticleDataType(p, location);
 
@@ -177,7 +183,7 @@ public final class VersionUtils {
       } else {
         location.getWorld().spawnParticle(pa, location, count, 0, 0, 0, 0);
       }
-    } else if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
+    } else if(isParticleBuilderSupported) {
       Particle p = XParticle.getParticle(particle);
       Object dataType = getParticleDataType(p, location);
 
