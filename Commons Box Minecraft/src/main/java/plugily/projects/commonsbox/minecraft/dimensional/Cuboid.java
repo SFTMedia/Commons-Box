@@ -71,8 +71,10 @@ public class Cuboid {
   public List<Chunk> chunkList() {
     final List<Chunk> chunks = new ArrayList<>();
     for(Block block : blockList()) {
-      if(!chunks.contains(block.getChunk())) {
-        chunks.add(block.getChunk());
+      Chunk chunk = block.getChunk();
+
+      if(!chunks.contains(chunk)) {
+        chunks.add(chunk);
       }
     }
     return chunks;
