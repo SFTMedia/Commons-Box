@@ -399,25 +399,33 @@ public final class VersionUtils {
   }
 
   public static void setItemInHand(LivingEntity entity, ItemStack stack) {
-    if(entity.getEquipment() == null) {
+    org.bukkit.inventory.EntityEquipment equipment = entity.getEquipment();
+
+    if(equipment == null) {
       return;
     }
+
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
-      entity.getEquipment().setItemInHand(stack);
+      equipment.setItemInHand(stack);
       return;
     }
-    entity.getEquipment().setItemInMainHand(stack);
+
+    equipment.setItemInMainHand(stack);
   }
 
   public static void setItemInHandDropChance(LivingEntity entity, float chance) {
-    if(entity.getEquipment() == null) {
+    org.bukkit.inventory.EntityEquipment equipment = entity.getEquipment();
+
+    if(equipment == null) {
       return;
     }
+
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
-      entity.getEquipment().setItemInHandDropChance(chance);
+      equipment.setItemInHandDropChance(chance);
       return;
     }
-    entity.getEquipment().setItemInMainHandDropChance(chance);
+
+    equipment.setItemInMainHandDropChance(chance);
   }
 
   public static void sendActionBar(Player player, String message) {
