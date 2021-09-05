@@ -50,7 +50,7 @@ public class LocationSerializer {
    */
   public static Location getLocation(String path) {
     String[] loc;
-    if(path == null || (loc = path.split(",")).length == 0) {
+    if(path == null || (loc = path.split(",", 6)).length == 0) {
       return null;
     }
 

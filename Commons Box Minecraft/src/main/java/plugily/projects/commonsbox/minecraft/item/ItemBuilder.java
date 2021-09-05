@@ -26,21 +26,27 @@ public class ItemBuilder {
   }
 
   public ItemBuilder(final Material material) {
-    this.itemStack = new ItemStack(material == null ? Material.STONE : material);
+    itemStack = new ItemStack(material == null ? Material.STONE : material);
   }
 
   public ItemBuilder type(Material material) {
-    this.itemStack.setType(material == null ? Material.STONE : material);
+    itemStack.setType(material == null ? Material.STONE : material);
     return this;
   }
 
   public ItemBuilder amount(int amount) {
-    this.itemStack.setAmount(amount < 1 ? 1 : amount);
+    itemStack.setAmount(amount < 1 ? 1 : amount);
     return this;
   }
 
+  @SuppressWarnings("deprecation")
   public ItemBuilder data(byte data) {
-    this.itemStack.getData().setData(data);
+    org.bukkit.material.MaterialData materialData = itemStack.getData();
+
+    if (materialData != null) {
+      materialData.setData(data);
+    }
+
     return this;
   }
 
@@ -54,12 +60,12 @@ public class ItemBuilder {
   }
 
   public ItemBuilder enchantment(Enchantment enchantment) {
-    this.itemStack.addUnsafeEnchantment(enchantment, 1);
+    itemStack.addUnsafeEnchantment(enchantment, 1);
     return this;
   }
 
   public ItemBuilder enchantment(Enchantment enchantment, int level) {
-    this.itemStack.addUnsafeEnchantment(enchantment, level);
+    itemStack.addUnsafeEnchantment(enchantment, level);
     return this;
   }
 
@@ -89,9 +95,8 @@ public class ItemBuilder {
       }
       if(meta.hasLore()) {
         List<String> lore = ComplementAccessor.getComplement().getLore(meta);
-        int size = lore.size();
 
-        for (int a = 0; a < size; a++) {
+        for (int a = 0; a < lore.size(); a++) {
           lore.set(a, ChatColor.translateAlternateColorCodes('&', lore.get(a)));
         }
 
