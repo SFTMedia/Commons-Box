@@ -429,6 +429,9 @@ public final class VersionUtils {
   }
 
   public static void sendActionBar(Player player, String message) {
+    if (player == null)
+      return;
+
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_10_R1)) {
       try {
         if(chatMessageTypeClass == null) {
@@ -468,6 +471,9 @@ public final class VersionUtils {
   }
 
   public static void sendTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
+    if (player == null)
+      return;
+
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_10_R2)) {
       try {
         Object chatTitle = null;
@@ -488,6 +494,9 @@ public final class VersionUtils {
   }
 
   public static void sendSubTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime) {
+    if (player == null)
+      return;
+
     if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_10_R2)) {
       try {
         Object chatTitle = null;

@@ -86,8 +86,12 @@ public class MysqlDatabase {
   }
 
   public void executeUpdate(String query) {
-    try(Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-      statement.executeUpdate(query);
+    try(Connection connection = getConnection()) {
+      if (connection != null) {
+        try (Statement statement = connection.createStatement()) {
+          statement.executeUpdate(query);
+        }
+      }
     } catch(SQLException e) {
       databaseLogger.warning("Failed to execute update: " + query);
     }
