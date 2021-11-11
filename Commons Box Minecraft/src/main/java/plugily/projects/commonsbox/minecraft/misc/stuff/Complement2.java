@@ -42,8 +42,7 @@ public final class Complement2 implements Complement {
 
 	@Override
 	public String getLine(SignChangeEvent event, int line) {
-		Component comp = event.line(line);
-		return comp == null ? "" : serialize(comp);
+		return serialize(event.line(line));
 	}
 
 	@Override
@@ -53,8 +52,7 @@ public final class Complement2 implements Complement {
 
 	@Override
 	public String getLine(Sign sign, int line) {
-		Component comp = sign.line(line);
-		return comp == null ? "" : serialize(comp);
+		return serialize(sign.line(line));
 	}
 
 	@Override
@@ -64,7 +62,7 @@ public final class Complement2 implements Complement {
 
 	@Override
 	public void setLore(ItemMeta meta, List<String> lore) {
-		List<Component> l = new ArrayList<>();
+		List<Component> l = new ArrayList<>(lore.size());
 
 		for (String e : lore) {
 			l.add(deserialize(e));
@@ -90,12 +88,16 @@ public final class Complement2 implements Complement {
 
 	@Override
 	public List<String> getLore(ItemMeta meta) {
-		List<String> lore = new ArrayList<>();
+		List<Component> itemLore = meta.lore();
 
-		if (meta.hasLore()) {
-			for (Component comp : meta.lore()) {
-				lore.add(serialize(comp));
-			}
+		if (itemLore == null) {
+			return new ArrayList<>();
+		}
+
+		List<String> lore = new ArrayList<>(itemLore.size());
+
+		for (Component comp : itemLore) {
+			lore.add(serialize(comp));
 		}
 
 		return lore;

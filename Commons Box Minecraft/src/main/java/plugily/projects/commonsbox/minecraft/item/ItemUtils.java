@@ -30,7 +30,11 @@ public class ItemUtils {
    * @return true if named, false otherwise
    */
   public static boolean isItemStackNamed(ItemStack stack) {
-    return stack != null && stack.hasItemMeta() && stack.getItemMeta().hasDisplayName();
+    if (stack == null)
+      return false;
+
+    org.bukkit.inventory.meta.ItemMeta meta = stack.getItemMeta();
+    return meta != null && meta.hasDisplayName();
   }
 
   public static ItemStack getSkull(String url) {

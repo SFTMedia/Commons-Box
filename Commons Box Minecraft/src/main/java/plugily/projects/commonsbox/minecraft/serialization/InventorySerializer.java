@@ -63,8 +63,11 @@ public class InventorySerializer {
 
       invConfig.set("Size", inventory.getSize());
       invConfig.set("Max stack size", inventory.getMaxStackSize());
-      List<String> activePotions = new ArrayList<>();
-      for(PotionEffect potion : player.getActivePotionEffects()) {
+
+      java.util.Collection<PotionEffect> activeEffects = player.getActivePotionEffects();
+      List<String> activePotions = new ArrayList<>(activeEffects.size());
+
+      for(PotionEffect potion : activeEffects) {
         activePotions.add(potion.getType().getName() + "#" + potion.getDuration() + "#" + potion.getAmplifier());
       }
       invConfig.set("Active potion effects", activePotions);
@@ -177,8 +180,7 @@ public class InventorySerializer {
         playerInventory.setArmorContents(armor);
 
         if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_9_R1)) {
-          ItemStack stack = invConfig.getItemStack("Offhand", new ItemStack(Material.AIR));
-          playerInventory.setItemInOffHand(stack);
+          playerInventory.setItemInOffHand(invConfig.getItemStack("Offhand", new ItemStack(Material.AIR)));
         }
 
         VersionUtils.setMaxHealth(player, invConfig.getDouble("Max health"));
@@ -203,7 +205,7 @@ public class InventorySerializer {
 
         GameMode gameMode = GameMode.SURVIVAL;
         try {
-          gameMode = GameMode.valueOf(invConfig.getString("GameMode", ""));
+          gameMode = GameMode.valueOf(invConfig.getString("GameMode", "").toUpperCase(java.util.Locale.ENGLISH));
         } catch (IllegalArgumentException e) {
         }
 
