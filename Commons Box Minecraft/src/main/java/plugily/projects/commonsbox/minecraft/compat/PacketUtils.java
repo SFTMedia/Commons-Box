@@ -32,13 +32,13 @@ public class PacketUtils {
         sendPacketMethod = playerConnection.getClass().getMethod("sendPacket", classByName("net.minecraft.network.protocol", "Packet"));
 
       sendPacketMethod.invoke(playerConnection, packet);
-    } catch (ReflectiveOperationException ex) {
+    } catch(ReflectiveOperationException ex) {
       ex.printStackTrace();
     }
   }
 
   public static Class<?> classByName(String newPackageName, String className) {
-    if (ServerVersion.Version.isCurrentLower(ServerVersion.Version.v1_17_R1) || newPackageName == null) {
+    if(ServerVersion.Version.isCurrentLower(ServerVersion.Version.v1_17_R1) || newPackageName == null) {
       newPackageName = "net.minecraft.server." + ServerVersion.Version.getPackageVersion()[3];
     }
 

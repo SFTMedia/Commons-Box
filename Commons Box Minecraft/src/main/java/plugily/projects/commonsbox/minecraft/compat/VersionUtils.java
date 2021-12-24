@@ -84,7 +84,7 @@ public final class VersionUtils {
 
       Class<?> packetPlayOutChatClass = PacketUtils.classByName("net.minecraft.network.protocol.game", "PacketPlayOutChat");
 
-      if (packetPlayOutChatClass != null) {
+      if(packetPlayOutChatClass != null) {
         if(chatMessageTypeClass == null) {
           packetPlayOutChatConstructor = packetPlayOutChatClass.getConstructor(iChatBaseComponent, byte.class);
         } else if(chatMessageType != null) {
@@ -229,7 +229,7 @@ public final class VersionUtils {
 
       try {
         return type.getData().getDeclaredConstructor().newInstance(type);
-      } catch (Exception e) {
+      } catch(Exception e) {
         e.printStackTrace();
       }
     }

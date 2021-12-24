@@ -20,12 +20,12 @@ public class ScriptEngine {
   }
 
   public void setValue(String value, Object valueObject) {
-    if (scriptEngine != null)
+    if(scriptEngine != null)
       scriptEngine.put(value, valueObject);
   }
 
   public void execute(String executable) {
-    if (scriptEngine == null)
+    if(scriptEngine == null)
       return;
 
     try {

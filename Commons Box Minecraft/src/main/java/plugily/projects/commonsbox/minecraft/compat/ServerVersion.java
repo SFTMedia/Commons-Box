@@ -47,7 +47,7 @@ public class ServerVersion {
     }
 
     public static String[] getPackageVersion() {
-      if (packageVersion == null) {
+      if(packageVersion == null) {
         packageVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
       }
 
@@ -67,7 +67,7 @@ public class ServerVersion {
         }
       }
 
-      if (current == null) { // If we forgot to add new version to enum
+      if(current == null) { // If we forgot to add new version to enum
         current = Version.v0_0_R0;
       }
 
