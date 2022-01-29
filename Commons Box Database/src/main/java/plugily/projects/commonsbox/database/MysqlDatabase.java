@@ -68,7 +68,7 @@ public class MysqlDatabase {
     try {
       databaseLogger.info("Creating HikariCP Configuration...");
       HikariDataSource config = new HikariDataSource();
-      config.setDataSourceClassName("com.mysql.cj.jdbc.MysqlDataSource");
+      config.setDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
       config.addDataSourceProperty("serverName", host);
       config.addDataSourceProperty("portNumber", port);
       config.addDataSourceProperty("databaseName", database);
