@@ -55,16 +55,6 @@ public class InventorySerializer {
       invConfig.set("ExperienceLevel", player.getLevel());
       invConfig.set("Current health", player.getHealth());
 
-      int max_health = VersionUtils.getMaxHealth(player);
-
-      PotionEffect effect = entity.getPotionEffect(PotionEffectType.HEALTH_BOOST);
-      if (effect != null) {
-        // Health boost effect has a base of 2 extra hearts then adds for 2 hearts for every level beyond
-        // 2 hearts (per level) is 4 half hearts (MAX_HEALTH is stored as half hearts)
-        max_health -= (effect.getAmplifier() + 1) * 4;
-      }
-
-      invConfig.set("Max health", max_health);
       invConfig.set("Food", player.getFoodLevel());
       invConfig.set("Saturation", player.getSaturation());
       invConfig.set("Fire ticks", player.getFireTicks());
@@ -77,10 +67,18 @@ public class InventorySerializer {
       java.util.Collection<PotionEffect> activeEffects = player.getActivePotionEffects();
       List<String> activePotions = new ArrayList<>(activeEffects.size());
 
+      double maxHealth = VersionUtils.getMaxHealth(player);
+
       for(PotionEffect potion : activeEffects) {
         activePotions.add(potion.getType().getName() + "#" + potion.getDuration() + "#" + potion.getAmplifier());
+        if (potion.getType().equals(PotionEffectType.HEALTH_BOOST)) {
+          // Health boost effect gives +2 hearts per level, health is counted in half hearts so amplifier * 4
+          maxHealth -= (potion.getAmplifier() + 1) * 4;
+        }
       }
+
       invConfig.set("Active potion effects", activePotions);
+      invConfig.set("Max health", maxHealth);
 
       org.bukkit.entity.HumanEntity holder = inventory.getHolder();
       if(holder instanceof Player) {
