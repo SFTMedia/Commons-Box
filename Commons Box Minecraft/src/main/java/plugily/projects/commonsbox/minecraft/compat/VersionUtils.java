@@ -20,6 +20,8 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -366,7 +368,16 @@ public final class VersionUtils {
 
     java.util.Optional<org.bukkit.attribute.AttributeInstance> at = MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MAX_HEALTH);
     if(at.isPresent()) {
-      return at.get().getValue();
+      int health_boost = 0;
+  
+      PotionEffect effect = entity.getPotionEffect(PotionEffectType.HEALTH_BOOST);
+      if (effect != null) {
+        // Health boost effect has a base of 2 extra hearts then adds for 2 hearts for every level beyond
+        // 2 hearts (per level) is 4 half hearts (MAX_HEALTH is stored as half hearts)
+        health_boost = (effect.getAmplifier() + 1) * 4;
+      }
+
+      return at.get().getValue() - health_boost;
     }
 
     return 20D;
