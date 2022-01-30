@@ -54,7 +54,17 @@ public class InventorySerializer {
       invConfig.set("ExperienceProgress", player.getExp());
       invConfig.set("ExperienceLevel", player.getLevel());
       invConfig.set("Current health", player.getHealth());
-      invConfig.set("Max health", VersionUtils.getMaxHealth(player));
+
+      int max_health = VersionUtils.getMaxHealth(player)
+
+      PotionEffect effect = entity.getPotionEffect(PotionEffectType.HEALTH_BOOST);
+      if (effect != null) {
+        // Health boost effect has a base of 2 extra hearts then adds for 2 hearts for every level beyond
+        // 2 hearts (per level) is 4 half hearts (MAX_HEALTH is stored as half hearts)
+        max_health -= (effect.getAmplifier() + 1) * 4;
+      }
+
+      invConfig.set("Max health", max_health);
       invConfig.set("Food", player.getFoodLevel());
       invConfig.set("Saturation", player.getSaturation());
       invConfig.set("Fire ticks", player.getFireTicks());
