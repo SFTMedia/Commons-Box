@@ -55,7 +55,7 @@ public class InventorySerializer {
       invConfig.set("ExperienceLevel", player.getLevel());
       invConfig.set("Current health", player.getHealth());
 
-      int max_health = VersionUtils.getMaxHealth(player)
+      int max_health = VersionUtils.getMaxHealth(player);
 
       PotionEffect effect = entity.getPotionEffect(PotionEffectType.HEALTH_BOOST);
       if (effect != null) {
