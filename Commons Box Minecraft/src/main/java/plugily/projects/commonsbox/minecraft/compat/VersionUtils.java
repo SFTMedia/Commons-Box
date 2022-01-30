@@ -73,6 +73,7 @@ public final class VersionUtils {
       Particle.class.getMethod("builder");
       isParticleBuilderSupported = true;
     } catch (NoSuchMethodException e) {
+    } catch (NoClassDefFoundError e) {
     }
 
     try {
